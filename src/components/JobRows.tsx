@@ -19,11 +19,11 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "./
 import { Progress } from "./ui/progress.tsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table.tsx";
 
-function jobStatusVariant(status: string) {
-  if (status === "completed") return "success";
-  if (status === "failed" || status === "canceled") return "warning";
-  if (status === "queued" || status === "running") return "default";
-  return "secondary";
+function jobStatusTone(status: string) {
+  if (status === "completed") return "good";
+  if (status === "failed" || status === "canceled") return "warn";
+  if (status === "queued" || status === "running") return "info";
+  return "muted";
 }
 
 function jobPreview(job: Job, limit: number) {
@@ -58,7 +58,7 @@ export function JobsTable({ title = "Recent jobs", description, jobs, cancelJob 
           <CardTitle>{title}</CardTitle>
           {description ? <CardDescription>{description}</CardDescription> : null}
         </div>
-        <Badge variant={activeCount ? "default" : "secondary"}>{activeCount ? `${activeCount} active` : "Idle"}</Badge>
+        {activeCount ? <Badge variant="default">{activeCount} active</Badge> : null}
       </CardHeader>
       <CardContent className="jobs-card-content">
         {jobs.length ? (
@@ -86,12 +86,21 @@ export function JobsTable({ title = "Recent jobs", description, jobs, cancelJob 
                         {preview ? <p>{preview}</p> : null}
                       </div>
                     </TableCell>
-                    <TableCell><Badge variant={jobStatusVariant(job.status)}>{job.status}</Badge></TableCell>
                     <TableCell>
-                      <div className="job-table-progress">
-                        <span>{progress}%</span>
-                        <Progress value={progress} />
-                      </div>
+                      <span className={`fleet-status-cell ${jobStatusTone(job.status)}`}>
+                        <span className={`fleet-status-dot ${jobStatusTone(job.status)}`} aria-hidden="true" />
+                        {job.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {active ? (
+                        <div className="job-table-progress">
+                          <span>{progress}%</span>
+                          <Progress value={progress} />
+                        </div>
+                      ) : (
+                        <span className="job-table-progress-final">{progress}%</span>
+                      )}
                     </TableCell>
                     <TableCell><span className="job-table-time">{formatTime(job.createdAt)}</span></TableCell>
                     <TableCell className="ui-table-actions">

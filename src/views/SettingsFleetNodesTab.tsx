@@ -2,6 +2,7 @@ import { FormEvent, memo, useCallback, useEffect, useMemo, useState } from "reac
 import { CheckCircle2, GitPullRequest, Network, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { FleetNode } from "../models/fleet.ts";
+import { LOCAL_FLEET_NODE } from "../models/fleet.ts";
 import { deleteJson, postJson, putJson } from "../controllers/api.ts";
 import { Alert } from "../components/ui/alert.tsx";
 import { Badge } from "../components/ui/badge.tsx";
@@ -22,14 +23,6 @@ type Draft = {
 };
 
 const EMPTY_DRAFT: Draft = { label: "", baseUrl: "", authToken: "", enabled: true };
-const FALLBACK_LOCAL_NODE: FleetNode = {
-  id: "local",
-  label: "Local Docker",
-  baseUrl: "http://127.0.0.1:5180",
-  enabled: true,
-  local: true,
-  status: "online",
-};
 
 function fleetNodeOnboardingState(nodes: FleetNode[], draft: Draft, testResult: Record<string, string>) {
   let onlineCount = nodes.length ? 0 : 1;
@@ -83,7 +76,7 @@ export function SettingsFleetNodesTab({ nodes, onRefresh }: { nodes: FleetNode[]
   const [busyAction, setBusyAction] = useState("");
   const [testResult, setTestResult] = useState<Record<string, string>>({});
   const remoteNodes = useMemo(() => nodes.filter((node) => !node.local), [nodes]);
-  const configuredNodes = useMemo(() => nodes.length ? nodes : [FALLBACK_LOCAL_NODE], [nodes]);
+  const configuredNodes = useMemo(() => nodes.length ? nodes : [LOCAL_FLEET_NODE], [nodes]);
   const editing = Boolean(draft.id);
   const onboarding = useMemo(() => fleetNodeOnboardingState(nodes, draft, testResult), [draft, nodes, testResult]);
   const baseUrlError = useMemo(() => fleetNodeBaseUrlError(draft.baseUrl), [draft.baseUrl]);
@@ -278,7 +271,10 @@ const FleetNodeRow = memo(function FleetNodeRow({
           {testResult ? ` · ${testResult}` : ""}
         </small>
       </div>
-      <Badge variant={node.status === "online" ? "success" : node.status === "offline" ? "warning" : "secondary"}>{node.status || "unknown"}</Badge>
+      <span className={`fleet-status-cell ${node.status === "online" ? "good" : node.status === "offline" ? "warn" : "muted"}`}>
+        <span className={`fleet-status-dot ${node.status === "online" ? "good" : node.status === "offline" ? "warn" : "muted"}`} aria-hidden="true" />
+        {node.status || "unknown"}
+      </span>
       <div className="settings-node-actions">
         <Button variant="outline" size="sm" type="button" onClick={() => onTest(node)} disabled={busy}>{busyAction === `test:${node.id}` ? <Spinner data-icon="inline-start" /> : <CheckCircle2 data-icon="inline-start" />}Test</Button>
         <Button variant="outline" size="sm" type="button" onClick={() => onForceUpdate(node)} disabled={busy || !canForceUpdate} title={canForceUpdate ? "Force git update and restart this console" : "Update this remote console manually once to enable remote force updates"}>{busyAction === `git:${node.id}` ? <Spinner data-icon="inline-start" /> : <GitPullRequest data-icon="inline-start" />}Force update</Button>

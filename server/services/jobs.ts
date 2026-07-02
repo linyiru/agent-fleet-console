@@ -16,6 +16,7 @@ import os from "node:os";
 import { createNemoHermesSandbox, isNemoClawInstance, runNemoHermesAction } from "./nemoclaw.ts";
 import { applyCreateCapabilities } from "./capabilities.ts";
 import { applyTelegramSetupToInstance } from "./telegram-onboarding.ts";
+import { runTemplateDeploy } from "./template-library.ts";
 
 let runnerActive = false;
 
@@ -222,6 +223,10 @@ async function runDockerAction(job: any) {
     case "backup-restore": {
       const result = await restoreBackup(payload as any);
       return { output: `Restored ${result.restored.length} agents.`, result };
+    }
+    case "template-deploy": {
+      const result = await runTemplateDeploy(payload as any);
+      return { output: `Deployed ${result.instance} from template.`, result };
     }
     case "clone": {
       const result = await cloneInstance(job.instance, payload as any);

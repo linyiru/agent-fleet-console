@@ -9,12 +9,6 @@
   .detail-title-block > span:last-child { @apply truncate text-xs text-muted; }
   .detail-eyebrow { @apply w-fit rounded-md border border-line/80 bg-card px-2 py-0.5 text-[10px] font-semibold uppercase tracking-normal text-muted; }
   .detail-command-strip { @apply flex min-w-0 flex-wrap items-center justify-end gap-2; }
-  .detail-status-pill, .detail-meta-chip { @apply inline-flex h-8 max-w-48 items-center gap-2 rounded-md border px-2.5 text-xs font-medium shadow-none; }
-  .detail-status-pill svg, .detail-meta-chip svg { @apply size-3.5 shrink-0; }
-  .detail-status-pill { @apply border-line bg-panel text-muted; }
-  .detail-status-pill.good { @apply border-emerald-200 bg-emerald-50 text-emerald-800; }
-  .detail-status-pill.warn { @apply border-amber-200 bg-amber-50 text-amber-800; }
-  .detail-meta-chip { @apply border-line/80 bg-card text-muted; }
   .detail-close-button { @apply transition duration-150; transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
   .advanced-panel { @apply grid min-h-0 min-w-0 grid-rows-[auto_minmax(0,1fr)] gap-0 overflow-hidden pt-0; }
   .agent-detail-nav-shell { @apply min-w-0 border-b border-line/70 bg-[oklch(97.6%_0.004_255)] p-0 shadow-none; }
@@ -41,10 +35,11 @@
   .details-summary-card .ui-card-header { @apply justify-start gap-2 border-b-0 px-3 pb-1 pt-3; }
   .details-summary-card .ui-card-header > svg { @apply grid size-7 shrink-0 place-items-center rounded-md border border-line/80 bg-panel p-1.5 text-muted shadow-none; }
   .details-summary-card .ui-card-header > div { @apply grid gap-0.5; }
-  .details-summary-card .ui-card-title { @apply text-base tabular-nums; }
+  .details-summary-card .ui-card-title { @apply inline-flex items-center gap-2 text-base tabular-nums; }
   .details-summary-card .ui-card-description { @apply m-0; }
   .details-summary-card .ui-card-content { @apply px-3 pb-3 pt-0; }
   .details-summary-card .ui-card-content > span:not(.ui-badge) { @apply text-xs text-muted; }
+  .details-card-link { @apply block truncate text-xs font-medium text-accent hover:underline; }
   .details-section-card { @apply bg-card; }
   .details-section-card .ui-card-header { @apply bg-card px-3 py-2.5; }
   .ui-card-content.details-row-list { @apply grid px-3 py-0.5; }
@@ -52,6 +47,9 @@
   .detail-row-label { @apply inline-flex items-center gap-2 text-xs font-semibold text-muted; }
   .detail-row-label svg { @apply size-6 shrink-0 rounded border border-line/80 bg-panel p-1.5 text-muted shadow-none; }
   .details-row-value { @apply truncate text-sm font-medium text-ink; }
+  .detail-row-status { @apply inline-flex items-center gap-2 text-sm font-medium text-ink; }
+  .detail-row-status.warning { @apply text-amber-800; }
+  .detail-row-status.muted { @apply text-muted; }
   .lifecycle-summary-card, .lifecycle-section-card { @apply overflow-visible bg-card; }
   .lifecycle-summary-card .ui-card-header, .lifecycle-section-card .ui-card-header { @apply items-center bg-card px-3 py-2; }
   .ui-card-content.lifecycle-summary-content { @apply grid px-3 py-0.5; }
@@ -60,7 +58,7 @@
   .lifecycle-action-row > div { @apply flex min-w-0 items-center gap-2; }
   .lifecycle-action-row > div > div { @apply grid min-w-0 gap-0.5; }
   .lifecycle-action-row strong { @apply truncate text-sm font-semibold text-ink; }
-  .lifecycle-action-row span { @apply hidden text-xs text-muted; }
+  .lifecycle-action-row > div > div > span { @apply truncate text-xs text-muted; }
   .lifecycle-action-row .ui-progress { @apply mt-1 max-w-sm; }
   .lifecycle-action-row .ui-button { @apply h-8; }
   .lifecycle-action-icon { @apply grid size-7 shrink-0 place-items-center rounded-md border border-line/80 bg-panel text-muted shadow-none; }
@@ -69,7 +67,7 @@
   .lifecycle-update-progress > div { @apply flex items-center justify-between gap-3; }
   .lifecycle-update-progress span { @apply text-xs font-semibold text-muted; }
   .lifecycle-update-progress strong { @apply text-xs font-semibold tabular-nums text-ink; }
-  .lifecycle-danger-card { @apply border-rose-200 bg-rose-50/30 shadow-sm; }
+  .lifecycle-danger-card { @apply border-rose-200 bg-rose-50/30 shadow-none; }
   .lifecycle-danger-card .ui-card-header { @apply border-rose-200/60 px-3 py-2; }
   .lifecycle-danger-card .ui-card-header svg { @apply text-rose-500; }
   .lifecycle-danger-row { @apply flex items-center justify-between gap-3 px-3 py-2; }

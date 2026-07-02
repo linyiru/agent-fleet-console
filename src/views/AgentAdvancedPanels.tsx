@@ -1,9 +1,8 @@
-import { ExternalLink, Gauge, ServerCog } from "lucide-react";
+import { ExternalLink, ServerCog } from "lucide-react";
 import type { Instance } from "../models/fleet.ts";
 import { Badge } from "../components/ui/badge.tsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.tsx";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../components/ui/empty.tsx";
-import { Progress } from "../components/ui/progress.tsx";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table.tsx";
 
 function serviceState(service: any) {
@@ -14,11 +13,11 @@ function serviceStatus(service: any) {
   return String(service.Status || service.status || "No status reported");
 }
 
-function serviceVariant(state: string) {
-  if (["running", "healthy"].includes(state)) return "success";
-  if (["starting", "restarting", "created"].includes(state)) return "default";
-  if (["failed", "dead", "exited", "unhealthy"].includes(state)) return "warning";
-  return "secondary";
+function serviceTone(state: string) {
+  if (["running", "healthy"].includes(state)) return "good";
+  if (["starting", "restarting", "created"].includes(state)) return "info";
+  if (["failed", "dead", "exited", "unhealthy"].includes(state)) return "warn";
+  return "muted";
 }
 
 function serviceUrl(service: any, lanAddress: string | undefined) {
@@ -41,23 +40,26 @@ export function ServicesPanel({ selected }: { selected: Instance }) {
       <Card className="service-inventory-card">
         <CardHeader>
           <div><CardTitle>Services</CardTitle><CardDescription>{services.length}/{total} discovered · {running} running</CardDescription></div>
-          <Badge variant={attention ? "warning" : running && running === total ? "success" : "secondary"}>{attention ? `${attention} need attention` : `${running} running`}</Badge>
+          {attention ? <Badge variant="warning">{attention} need attention</Badge> : null}
         </CardHeader>
         <CardContent>
           {services.length ? (
             <Table className="services-table">
-              <TableHeader><TableRow><TableHead>Service</TableHead><TableHead>State</TableHead><TableHead>Status</TableHead><TableHead>Health</TableHead><TableHead>URL</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Service</TableHead><TableHead>State</TableHead><TableHead>Status</TableHead><TableHead>URL</TableHead></TableRow></TableHeader>
               <TableBody>
                 {services.map((service: any) => {
                   const state = serviceState(service);
-                  const healthy = ["running", "healthy"].includes(state);
                   const url = serviceUrl(service, lanAddress);
                   return (
                     <TableRow key={service.Name || service.name}>
                       <TableCell><div className="service-name-cell"><strong>{service.Service || service.name || "service"}</strong><small>{service.Name || service.name || "Docker service"}</small></div></TableCell>
-                      <TableCell><Badge variant={serviceVariant(state)}>{state}</Badge></TableCell>
+                      <TableCell>
+                        <span className={`fleet-status-cell ${serviceTone(state)}`}>
+                          <span className={`fleet-status-dot ${serviceTone(state)}`} aria-hidden="true" />
+                          {state}
+                        </span>
+                      </TableCell>
                       <TableCell><span className="service-status-copy">{serviceStatus(service)}</span></TableCell>
-                      <TableCell><div className="service-health-cell"><span><Gauge />{healthy ? "Healthy" : "Check"}</span><Progress value={healthy ? 100 : state === "starting" ? 50 : 10} /></div></TableCell>
                       <TableCell>{url ? <a href={url} target="_blank" rel="noreferrer" className="service-url-link"><span>{url}</span><ExternalLink data-icon="inline-start" style={{ width: 12, height: 12, opacity: 0.5 }} /> </a> : <span className="text-muted-foreground">—</span>}</TableCell>
                     </TableRow>
                   );

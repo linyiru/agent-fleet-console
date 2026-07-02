@@ -65,7 +65,6 @@
   .ui-dialog-header.detail-header { @apply relative grid items-start gap-3 pr-14; }
   .detail-identity { @apply w-full; }
   .detail-command-strip { @apply grid w-full grid-cols-2 justify-start gap-2 overflow-visible p-0; }
-  .detail-status-pill, .detail-meta-chip { @apply max-w-none shrink-0 justify-start; }
   .detail-close-button { @apply absolute right-3 top-3; }
   .agent-detail-nav-shell, .agent-detail-workspace { @apply rounded-xl; }
   .agent-detail-workspace-core { @apply rounded-[calc(0.75rem-0.125rem)]; }
@@ -93,6 +92,7 @@
   .fleet-detail-tiles { @apply grid-cols-1; }
   .fleet-bulk-bar { @apply flex-wrap; }
   .fleet-bulk-actions { @apply w-full; }
+  .fleet-bulk-actions .ui-button { @apply flex-1; }
   .provider-model-grid { @apply grid-cols-1; }
   .settings-credential-fields { @apply grid-cols-1; }
 }
@@ -138,5 +138,5 @@
     animation: none;
   }
   .tab-content, .settings-workspace, .agent-detail-workspace-core { animation: none; }
-  .ui-spinner, .ui-skeleton { animation: none; }
+  .ui-spinner, .ui-skeleton, .fleet-guidance-spinner { animation: none; }
 }

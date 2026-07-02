@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, postJson, putJson } from "./api.ts";
 import { activeJob, isAgentReady } from "./format.ts";
-import type { AgentBackupOptions, AgentCloneOptions, AgentMoveOptions, AgentSyncTarget, BaselineStatus, CreateAgentOptions, FleetNode, GlobalConfig, Instance, Job, ProviderCatalog, ProviderConfig, TelegramAgentOptions } from "../models/fleet.ts";
+import type { AgentBackupOptions, AgentCloneOptions, AgentMoveOptions, AgentSyncTarget, AgentTemplateCaptureOptions, BaselineStatus, CreateAgentOptions, FleetNode, GlobalConfig, Instance, Job, ProviderCatalog, ProviderConfig, TelegramAgentOptions } from "../models/fleet.ts";
 import { EMPTY_GLOBAL_CONFIG } from "../models/fleet.ts";
 
 function delay(ms: number) {
@@ -47,7 +47,17 @@ function pendingInstance(name: string, job: Job | null, options: CreateAgentOpti
     runningServices: 0,
     health: { dashboard: false, camofox: false },
     memory: { ok: false, provider: "", pluginOk: false, fileCount: 0, totalBytes: 0 },
-    capabilities: {},
+    capabilities: {
+      codexCli: {
+        ready: false,
+        provider: options.capabilities?.codexCli ? "openai-codex" : "",
+        client: options.capabilities?.codexCli ? "codex" : "",
+      },
+      sharedMemory: {
+        ready: false,
+        provider: options.capabilities?.sharedMemory ? "fleet-shared-memory" : "",
+      },
+    },
     endpoints: {},
     ports: {},
     dependencies: { camofox },
@@ -145,16 +155,22 @@ export function useFleetConsole() {
     const camofox = runtime === "nemoclaw" ? false : options.camofox;
     const nodeId = options.nodeId || "local";
     const node = fleetNodes.find((item) => item.id === nodeId);
-    const result = await postJson<{ job: Job }>(`/api/fleet/${encodeURIComponent(nodeId)}/instances`, {
-      name,
-      templateId: "personal-assistant",
-      start: true,
-      runtime,
-      dependencies: { camofox },
-      capabilities: options.capabilities || {},
-      contextFiles: options.contextFiles || {},
-      telegram: options.telegram || { enabled: false },
-    });
+    const result = options.templateLibraryId
+      ? await postJson<{ job: Job }>(`/api/template-library/${encodeURIComponent(options.templateLibraryId)}/deploy`, {
+        name,
+        targetNodeId: nodeId,
+        start: true,
+      })
+      : await postJson<{ job: Job }>(`/api/fleet/${encodeURIComponent(nodeId)}/instances`, {
+        name,
+        templateId: "personal-assistant",
+        start: true,
+        runtime,
+        dependencies: { camofox },
+        capabilities: options.capabilities || {},
+        contextFiles: options.contextFiles || {},
+        telegram: options.telegram || { enabled: false },
+      });
     const placeholder = pendingInstance(name, result.job, { ...options, runtime, camofox, nodeId }, node);
     const key = fleetKey(name, nodeId);
     setInstances((current) => [...current.filter((item) => (item.fleetKey || fleetKey(item.name, item.nodeId)) !== key), placeholder].sort((a, b) => a.name.localeCompare(b.name)));
@@ -240,6 +256,16 @@ export function useFleetConsole() {
     await loadFleet(true);
   }
 
+  async function captureAgentTemplate(name: string, options: AgentTemplateCaptureOptions, nodeId = "local") {
+    await postJson("/api/template-library/capture", {
+      sourceName: name,
+      sourceNodeId: nodeId,
+      name: options.name,
+      description: options.description,
+      includeWorkspace: options.includeWorkspace,
+    });
+  }
+
   async function cloneAgent(name: string, options: AgentCloneOptions, nodeId = "local") {
     await postJson(`/api/fleet/${encodeURIComponent(nodeId)}/instances/${encodeURIComponent(name)}/clone`, options);
     await loadFleet(true);
@@ -275,7 +301,7 @@ export function useFleetConsole() {
   }, [activeJobs.length]);
 
   return {
-    activeJobs, backupAgent, baseline, baselineLoading, cancelJob, cloneAgent, connectTelegram, createAgent, createOpen, detailOpen, error, fleetNodes, globalConfig, instances, jobs, loadBaseline, loadFleet, moveAgent,
+    activeJobs, backupAgent, baseline, baselineLoading, cancelJob, captureAgentTemplate, cloneAgent, connectTelegram, createAgent, createOpen, detailOpen, error, fleetNodes, globalConfig, instances, jobs, loadBaseline, loadFleet, moveAgent,
     loading, onboardingOpen, openAdvanced, openAgent, pendingAction: selectedName ? pendingActions[selectedName] || "" : "", pendingActions, providerCatalog, refreshing, runAction, runAgentAction, saveGlobalCredential, saveGlobalProvider,
     refreshGlobalConfig: loadGlobalConfig, renameAgent, selected, setCreateOpen, setDetailOpen, setOnboardingOpen, setSettingsOpen, settingsOpen, syncGlobalConfig,
   };

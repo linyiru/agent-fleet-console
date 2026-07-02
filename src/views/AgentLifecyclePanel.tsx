@@ -1,6 +1,6 @@
-import { Archive, CircleAlert, CircleStop, Clock, CopyPlus, Download, Gauge, MoveRight, Play, RotateCw, Trash2, type LucideIcon } from "lucide-react";
+import { Archive, CircleAlert, CircleStop, Clock, CopyPlus, Download, Library, MoveRight, Play, RotateCw, Trash2, type LucideIcon } from "lucide-react";
 import { useState } from "react";
-import type { AgentBackupOptions, AgentCloneOptions, AgentMoveOptions, FleetNode, Instance, Job } from "../models/fleet.ts";
+import type { AgentBackupOptions, AgentCloneOptions, AgentMoveOptions, AgentTemplateCaptureOptions, FleetNode, Instance, Job } from "../models/fleet.ts";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../components/ui/alert-dialog.tsx";
 import { Badge } from "../components/ui/badge.tsx";
 import { Button } from "../components/ui/button.tsx";
@@ -12,6 +12,7 @@ import { DetailRow } from "./AgentDetailRows.tsx";
 import { AgentBackupModal } from "./AgentBackupModal.tsx";
 import { AgentCloneModal } from "./AgentCloneModal.tsx";
 import { AgentMoveModal } from "./AgentMoveModal.tsx";
+import { AgentTemplateCaptureModal } from "./AgentTemplateCaptureModal.tsx";
 
 type LifecycleAction = "start" | "stop" | "restart" | "update" | "delete";
 type ConfirmableLifecycleAction = Exclude<LifecycleAction, "start">;
@@ -23,13 +24,14 @@ const LIFECYCLE_CONFIRMATION_COPY: Record<ConfirmableLifecycleAction, { title: s
   delete: { title: "Delete this agent?", description: "This permanently removes the agent from the fleet. This action cannot be undone.", actionLabel: "Delete agent", variant: "destructive" },
 };
 
-export function LifecyclePanel({ selected, jobs, instances, fleetNodes, pendingAction, onBackupAgent, onCloneAgent, onMoveAgent, runAction }: {
+export function LifecyclePanel({ selected, jobs, instances, fleetNodes, pendingAction, onBackupAgent, onCaptureTemplate, onCloneAgent, onMoveAgent, runAction }: {
   selected: Instance;
   jobs: Job[];
   instances: Instance[];
   fleetNodes: FleetNode[];
   pendingAction: string;
   onBackupAgent: (name: string, options: AgentBackupOptions) => Promise<void>;
+  onCaptureTemplate: (name: string, options: AgentTemplateCaptureOptions) => Promise<void>;
   onCloneAgent: (name: string, options: AgentCloneOptions) => Promise<void>;
   onMoveAgent: (name: string, options: AgentMoveOptions) => Promise<void>;
   runAction: (action: string) => Promise<void>;
@@ -38,13 +40,12 @@ export function LifecyclePanel({ selected, jobs, instances, fleetNodes, pendingA
   const [backupOpen, setBackupOpen] = useState(false);
   const [cloneOpen, setCloneOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
+  const [templateOpen, setTemplateOpen] = useState(false);
   const versionsBehind = selected.update?.versionsBehind;
   const updateStatus = selected.update?.status || "unknown";
   const updateKnown = typeof versionsBehind === "number";
   const updateLabel = updateStatus === "reversion" ? "Reversion available" : updateKnown ? versionsBehind === 0 ? "Up to date" : `${versionsBehind} ${versionsBehind === 1 ? "version" : "versions"} behind` : "Version unknown";
   const updateVariant = updateStatus === "reversion" ? "warning" : !updateKnown ? "secondary" : versionsBehind > 0 ? "warning" : "success";
-  const revisionDeltaLabel = updateStatus === "reversion" ? "Revision direction" : "Revision delta";
-  const revisionDeltaValue = updateStatus === "reversion" ? "Ahead of source" : updateKnown ? versionsBehind === 0 ? "No changes" : `${versionsBehind} ${versionsBehind === 1 ? "version" : "versions"} behind` : "Unknown";
   const updateJob = jobs.find((job) => job.action === "update" && ["queued", "running"].includes(job.status));
   const updateProgress = Math.min(Math.max(Number(updateJob?.progress || (pendingAction === "update" ? 5 : 0)), 0), 100);
   const updateInProgress = Boolean(updateJob || pendingAction === "update");
@@ -76,12 +77,8 @@ export function LifecyclePanel({ selected, jobs, instances, fleetNodes, pendingA
           <Badge variant={updateVariant}>{updateLabel}</Badge>
         </CardHeader>
         <CardContent className="lifecycle-summary-content">
-          <DetailRow icon={Gauge} label={revisionDeltaLabel} value={revisionDeltaValue} badgeVariant={updateVariant} />
-          <Separator />
           <DetailRow icon={Download} label="Current revision" value={selected.update?.currentRevision || "Unknown"} />
           {selected.update?.latestRevision ? <><Separator /><DetailRow icon={Clock} label="Latest revision" value={selected.update.latestRevision} /></> : null}
-          <Separator />
-          <DetailRow icon={Gauge} label="Update status" value={updateLabel} badgeVariant={updateVariant} />
           {updateInProgress ? <><Separator /><div className="lifecycle-update-progress"><div><span>Updating</span><strong>{updateProgress}%</strong></div><Progress value={updateProgress} /></div></> : null}
         </CardContent>
       </Card>
@@ -105,6 +102,8 @@ export function LifecyclePanel({ selected, jobs, instances, fleetNodes, pendingA
         </CardHeader>
         <CardContent className="lifecycle-action-list">
           <LifecycleActionRow icon={Archive} title="Back up" description="Create a local archive for this agent." actionLabel="Back up" variant="outline" pending={false} disabled={actionDisabled} onClick={() => setBackupOpen(true)} />
+          <Separator />
+          <LifecycleActionRow icon={Library} title="Save as template" description="Capture a reusable secret-free template." actionLabel="Save" variant="outline" pending={false} disabled={actionDisabled || selected.nodeLocal === false || selected.runtime === "nemoclaw"} onClick={() => setTemplateOpen(true)} />
           <Separator />
           <LifecycleActionRow icon={CopyPlus} title="Clone" description="Create a new agent from this agent's state." actionLabel="Clone" variant="outline" pending={false} disabled={actionDisabled} onClick={() => setCloneOpen(true)} />
           <Separator />
@@ -131,6 +130,7 @@ export function LifecyclePanel({ selected, jobs, instances, fleetNodes, pendingA
         </AlertDialogContent>
       </AlertDialog>
       <AgentBackupModal open={backupOpen} selected={selected} onClose={() => setBackupOpen(false)} onBackup={onBackupAgent} />
+      <AgentTemplateCaptureModal open={templateOpen} selected={selected} onClose={() => setTemplateOpen(false)} onCapture={onCaptureTemplate} />
       <AgentCloneModal open={cloneOpen} selected={selected} onClose={() => setCloneOpen(false)} onClone={onCloneAgent} />
       <AgentMoveModal open={moveOpen} selected={selected} instances={instances} fleetNodes={fleetNodes} onClose={() => setMoveOpen(false)} onMove={onMoveAgent} />
     </div>

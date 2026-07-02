@@ -249,7 +249,7 @@
   .fleet-tab.active { @apply rounded-none border-x-0 border-t-0 border-b-2 border-b-ink bg-transparent text-ink; }
   .fleet-block-header { @apply relative grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-line/70 bg-[oklch(98.8%_0.004_255)] px-4 py-3 text-ink shadow-none; }
   .fleet-block-header::before { @apply hidden; }
-  .fleet-title-block { @apply grid min-w-0 gap-1; }
+  .fleet-title-block { @apply grid min-w-0 justify-items-start gap-1; }
   .fleet-block-header h2 { @apply m-0 text-2xl font-semibold leading-tight text-ink; }
   .fleet-block-header p { @apply m-0 max-w-xl text-sm leading-5 text-muted; }
   .fleet-title-block span { @apply text-sm font-medium text-muted; }
@@ -266,34 +266,31 @@
   .fleet-stat-metric span { @apply truncate text-[11px] font-semibold uppercase tracking-normal text-muted; }
   .fleet-stat-metric strong { @apply truncate text-xl font-semibold leading-none tracking-normal text-ink; font-variant-numeric: tabular-nums; }
   .fleet-stat-metric small { @apply truncate text-xs font-medium text-muted; }
-  .fleet-stat-delta { @apply inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums; }
-  .fleet-stat-delta.up { @apply text-emerald-700; }
-  .fleet-stat-delta.down { @apply text-rose-700; }
-  .fleet-stat-delta.flat { @apply text-muted; }
-  .fleet-stat-metric svg { @apply h-7 w-full shrink-0 text-ink/75; }
+  .fleet-stat-delta { @apply inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums text-muted; }
+  .fleet-stat-metric svg { @apply h-7 w-full shrink-0 text-ink/40; }
   .fleet-sparkline-baseline { stroke: oklch(70% 0.01 255 / 0.25); stroke-width: 1; stroke-dasharray: 2 3; }
   .fleet-stat-metric polyline { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
-  .fleet-stat-metric.attention { @apply text-amber-900; }
-  .fleet-stat-metric.attention svg { @apply text-amber-800; }
+  .fleet-stat-metric.attention small { @apply text-amber-700; }
   .fleet-stat-metric.active svg { @apply text-accent-rich; }
-  .fleet-guidance-strip { @apply mx-5 my-3 flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900; }
-  .fleet-guidance-strip.active { @apply border-accent/20 bg-accent/5 text-accent; }
-  .fleet-guidance-copy { @apply grid min-w-0 gap-1.5; }
-  .fleet-guidance-title { @apply text-sm font-semibold; }
+  .fleet-guidance-strip { @apply flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line/70 bg-[oklch(98.2%_0.004_255)] px-4 py-2.5 text-sm font-medium text-ink; }
+  .fleet-guidance-strip.active { @apply text-ink; }
+  .fleet-guidance-copy { @apply flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5; }
+  .fleet-guidance-title { @apply inline-flex shrink-0 items-center gap-2 text-[13px] font-semibold text-ink; }
   .fleet-guidance-agents { @apply flex flex-wrap gap-1.5; }
-  .fleet-guidance-chip { @apply inline-flex h-7 items-center gap-1.5 rounded-md border border-amber-300/70 bg-amber-100/60 px-2 text-xs font-medium text-amber-900 transition hover:bg-amber-100; }
-  .fleet-guidance-chip.good { @apply border-emerald-200 bg-emerald-50 text-emerald-800; }
-  .fleet-guidance-chip.warn { @apply border-amber-300 bg-amber-100/60 text-amber-900; }
-  .fleet-guidance-chip.muted, .fleet-guidance-chip.info { @apply border-line/70 bg-card/70 text-muted; }
-  .fleet-guidance-strip.active .fleet-guidance-chip.info { @apply border-accent/20 bg-card text-accent; }
-  .fleet-guidance-spinner { @apply size-3.5 shrink-0; animation: spin 1s linear infinite; }
+  .fleet-guidance-chip { @apply inline-flex h-6 items-center gap-1.5 rounded-md border border-line/80 bg-card px-2 text-xs font-medium text-ink transition hover:border-edge hover:bg-[oklch(95.5%_0.006_255)]; }
+  .fleet-guidance-chip:focus-visible { @apply outline-none ring-2 ring-accent/25; }
+  .fleet-guidance-chip.warn, .fleet-guidance-chip.good { @apply border-line/80 bg-card text-ink; }
+  .fleet-guidance-chip.muted, .fleet-guidance-chip.info { @apply text-muted; }
+  .fleet-guidance-spinner { @apply size-3.5 shrink-0 text-accent; animation: spin 1s linear infinite; }
   .fleet-guidance-strip .ui-button { @apply shrink-0; }
   .fleet-status-dot { @apply block size-2 shrink-0 rounded-full bg-muted; }
   .fleet-status-dot.good { @apply bg-emerald-500; }
   .fleet-status-dot.warn { @apply bg-amber-500; }
   .fleet-status-dot.info { @apply bg-accent; }
   .fleet-status-dot.muted { @apply bg-[oklch(70%_0.012_255)]; }
-  .fleet-status-badge { @apply inline-flex items-center gap-1.5; }
+  .fleet-status-cell { @apply inline-flex items-center gap-2 text-[13px] font-medium text-ink; }
+  .fleet-status-cell.warn { @apply border-transparent bg-transparent text-amber-800; }
+  .fleet-status-cell.muted { @apply text-muted; }
   .fleet-bulk-bar { @apply sticky top-0 z-30 flex items-center gap-3 border-b border-line/70 bg-[oklch(97.5%_0.005_255/0.94)] px-4 py-2 backdrop-blur-md; }
   .fleet-bulk-count { @apply text-xs font-semibold text-ink; }
   .fleet-bulk-actions { @apply flex flex-1 flex-wrap gap-1.5; }
@@ -322,12 +319,11 @@
   .fleet-checkbox-cell { @apply w-10 pr-0; }
   .fleet-checkbox-cell .ui-checkbox { @apply size-4 cursor-pointer; }
   .fleet-agent-table .ui-table-row { @apply transition duration-150; transition-timing-function: cubic-bezier(0.22,1,0.36,1); }
-  .fleet-agent-table .ui-table-body .ui-table-row { @apply cursor-pointer; }
-  .fleet-agent-table .ui-table-body .ui-table-row:nth-child(even) { @apply bg-[oklch(96.8%_0.004_255/0.45)]; }
-  .fleet-agent-table .ui-table-body .ui-table-row:hover { @apply bg-[oklch(94.8%_0.006_255)]; }
-  .fleet-agent-table .ui-table-row.selected { @apply bg-[oklch(94.5%_0.006_255)] shadow-[inset_3px_0_0_oklch(25%_0.01_255)]; }
+  .fleet-agent-table .ui-table-body .ui-table-row { @apply cursor-pointer border-b border-line/50; }
+  .fleet-agent-table .ui-table-body .ui-table-row:hover { @apply bg-[oklch(96.2%_0.005_255)]; }
+  .fleet-agent-table .ui-table-row.selected { @apply bg-[oklch(94.5%_0.006_255)]; }
   .fleet-agent-table .ui-table-row.checked { @apply bg-[oklch(94.8%_0.012_255/0.6)]; }
-  .fleet-agent-table .ui-table-cell { @apply px-4 py-1.5 align-middle; }
+  .fleet-agent-table .ui-table-cell { @apply px-4 py-2 align-middle; }
   .fleet-expand-cell { @apply w-12 pr-0; }
   .fleet-expand-cell .ui-button, .fleet-manage-cell .ui-button-icon { @apply size-7 rounded-md; }
   .fleet-agent-name-button { @apply grid min-w-0 gap-0.5 rounded-md text-left outline-none transition duration-150; transition-timing-function: cubic-bezier(0.22,1,0.36,1); }
@@ -336,18 +332,20 @@
   .fleet-agent-name-button span { @apply flex min-w-0 items-center gap-1.5 truncate text-sm font-medium text-ink; }
   .fleet-agent-name-button small { @apply truncate text-xs text-muted; }
   .fleet-agent-initials { @apply grid size-5 shrink-0 place-items-center rounded bg-[oklch(88%_0.008_255)] text-[9px] font-semibold not-italic text-muted; }
-  .fleet-host-cell, .fleet-service-meter, .fleet-metric-cell { @apply inline-flex h-6 max-w-36 items-center gap-1.5 rounded-md border border-line/70 bg-card/60 px-2 text-xs font-medium text-muted; }
-  .fleet-host-cell svg, .fleet-service-meter svg, .fleet-metric-cell svg { @apply size-3.5 text-muted; }
+  .fleet-host-cell, .fleet-service-meter, .fleet-metric-cell { @apply inline-flex max-w-36 items-center gap-1.5 text-xs font-medium text-muted; }
+  .fleet-host-cell svg, .fleet-service-meter svg, .fleet-metric-cell svg { @apply size-3.5 shrink-0 text-muted/80; }
   .fleet-host-cell span, .fleet-service-meter span, .fleet-metric-cell span { @apply truncate; }
-  .fleet-host-cell.offline { @apply border-amber-200 bg-amber-50 text-amber-900; }
+  .fleet-host-cell.offline { @apply rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-900; }
   .fleet-host-cell.offline svg { @apply text-amber-700; }
   .fleet-provider-cell { @apply min-w-[11rem]; }
   .fleet-provider-copy { @apply flex min-w-0 items-baseline gap-1.5; }
-  .fleet-provider-copy strong { @apply truncate text-sm font-medium text-ink; }
-  .fleet-provider-copy small { @apply truncate text-xs text-muted; }
-  .fleet-service-meter strong { @apply text-xs text-ink; }
-  .fleet-metric-cell.good { @apply border-emerald-200 bg-emerald-50 text-emerald-800; }
-  .fleet-metric-cell.muted { @apply text-muted; }
+  .fleet-provider-copy strong { @apply truncate text-[13px] font-medium text-ink; }
+  .fleet-provider-copy small { @apply truncate font-mono text-[11px] text-muted; }
+  .fleet-service-meter { @apply gap-0.5 tabular-nums; }
+  .fleet-service-meter strong { @apply text-xs font-semibold text-ink; }
+  .fleet-service-meter.warn strong { @apply text-amber-700; }
+  .fleet-metric-cell.muted { @apply text-muted/70; }
+  .fleet-metric-cell.muted svg { @apply text-muted/50; }
   .fleet-job-pill { @apply inline-flex h-6 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/8 px-2 text-xs font-medium text-accent-rich; }
   .fleet-job-pill svg { @apply size-3.5; }
   .fleet-muted-copy { @apply text-xs font-medium text-muted; }

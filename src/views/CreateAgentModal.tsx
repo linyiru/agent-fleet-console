@@ -1,5 +1,5 @@
 import QRCode from "qrcode";
-import { CheckCircle2, ExternalLink, Globe2, MessageCircle, Monitor, Plus, QrCode, Server, X } from "lucide-react";
+import { CheckCircle2, Database, ExternalLink, Globe2, Library, MessageCircle, Monitor, Plus, QrCode, Server, Terminal, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "../components/ui/button.tsx";
 import { DialogContent, DialogDescription, DialogHeader, DialogOverlay, DialogTitle } from "../components/ui/dialog.tsx";
@@ -12,10 +12,9 @@ import { Checkbox } from "../components/ui/checkbox.tsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select.tsx";
 import { Spinner } from "../components/ui/spinner.tsx";
 import { api, apiErrorMessage, postJson } from "../controllers/api.ts";
-import type { CreateAgentOptions, FleetNode, GlobalConfig, ProviderConfig } from "../models/fleet.ts";
+import type { AgentTemplateLibraryItem, CreateAgentOptions, FleetNode, GlobalConfig, ProviderConfig } from "../models/fleet.ts";
+import { AGENT_NAME_PATTERN, LOCAL_FLEET_NODE, NEMOCLAW_AGENT_NAME_PATTERN, slugifyAgentName } from "../models/fleet.ts";
 
-const NAME_PATTERN = /^[a-z0-9](?:[a-z0-9_-]{0,61}[a-z0-9])?$/;
-const NEMOCLAW_NAME_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 const TELEGRAM_USER_ID_PATTERN = /^[1-9]\d{4,19}$/;
 const NEMOHERMES_OLLAMA_PROVIDER: ProviderConfig = {
   provider: "ollama",
@@ -41,10 +40,6 @@ type TelegramStatus = {
   expires_at?: string;
 };
 
-function slugify(value: string) {
-  return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "").slice(0, 63);
-}
-
 export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalConfig, onSaveProvider }: {
   open: boolean;
   onClose: () => void;
@@ -54,7 +49,12 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
   onSaveProvider: (provider: ProviderConfig) => Promise<void>;
 }) {
   const [name, setName] = useState("");
+  const [creationMode, setCreationMode] = useState<"fresh" | "template">("fresh");
+  const [templates, setTemplates] = useState<AgentTemplateLibraryItem[]>([]);
+  const [templateLibraryId, setTemplateLibraryId] = useState("");
   const [camofox, setCamofox] = useState(true);
+  const [codexCli, setCodexCli] = useState(false);
+  const [sharedMemory, setSharedMemory] = useState(false);
   const [runtime, setRuntime] = useState<CreateAgentOptions["runtime"]>("docker");
   const [nodeId, setNodeId] = useState("local");
   const [telegramEnabled, setTelegramEnabled] = useState(false);
@@ -68,43 +68,56 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
   const [busy, setBusy] = useState(false);
   const [providerBusy, setProviderBusy] = useState(false);
   const [error, setError] = useState("");
-  const deployableNodes = fleetNodes.length ? fleetNodes : [{
-    id: "local",
-    label: "Local Docker",
-    baseUrl: "http://127.0.0.1:5180",
-    enabled: true,
-    local: true,
-    status: "online",
-  } as FleetNode];
+  const deployableNodes = fleetNodes.length ? fleetNodes : [LOCAL_FLEET_NODE];
   const selectedNode = deployableNodes.find((node) => node.id === nodeId) || deployableNodes[0];
-  const trimmed = slugify(name);
-  const valid = (runtime === "nemoclaw" ? NEMOCLAW_NAME_PATTERN : NAME_PATTERN).test(trimmed);
+  const templateMode = creationMode === "template";
+  const selectedTemplate = templates.find((template) => template.id === templateLibraryId) || null;
+  const effectiveRuntime = templateMode ? "docker" : runtime;
+  const trimmed = slugifyAgentName(name, { allowUnderscore: effectiveRuntime !== "nemoclaw" });
+  const valid = (effectiveRuntime === "nemoclaw" ? NEMOCLAW_AGENT_NAME_PATTERN : AGENT_NAME_PATTERN).test(trimmed);
   const targetReady = Boolean(selectedNode && selectedNode.enabled !== false && selectedNode.status !== "offline");
-  const telegramReady = !telegramEnabled || (telegramPhase === "ready" && Boolean(telegramBotToken) && TELEGRAM_USER_ID_PATTERN.test(trustedTelegramId.trim()));
-  const telegramIdInvalid = telegramEnabled && trustedTelegramId.trim() !== "" && !TELEGRAM_USER_ID_PATTERN.test(trustedTelegramId.trim());
+  const templateReady = !templateMode || Boolean(selectedTemplate);
+  const telegramReady = templateMode || !telegramEnabled || (telegramPhase === "ready" && Boolean(telegramBotToken) && TELEGRAM_USER_ID_PATTERN.test(trustedTelegramId.trim()));
+  const telegramIdInvalid = !templateMode && telegramEnabled && trustedTelegramId.trim() !== "" && !TELEGRAM_USER_ID_PATTERN.test(trustedTelegramId.trim());
   const credentials = globalConfig?.credentials || [];
   const credentialKeys = useMemo(() => new Set(credentials.map((credential) => credential.key)), [credentials]);
   const providerId = globalConfig?.provider?.provider || "";
   const providerBaseUrl = globalConfig?.provider?.baseUrl || "";
-  const nemoHermesProviderIssue = runtime === "nemoclaw"
+  const selectedNodeIsLocal = selectedNode.id === "local" || selectedNode.local === true;
+  const codexLoginSaved = Boolean(globalConfig?.oauthCredentials?.some((credential) => credential.provider === "openai-codex"));
+  const codexCliDisabled = runtime === "nemoclaw" || (selectedNodeIsLocal && !codexLoginSaved);
+  const codexCliDescription = runtime === "nemoclaw"
+    ? "Available for Docker Hermes agents."
+    : selectedNodeIsLocal && !codexLoginSaved
+      ? "Complete Codex device login in Settings first."
+      : selectedNodeIsLocal
+        ? "Install Codex CLI and reuse Fleet's saved device login."
+        : "Install Codex CLI using the target node's saved Codex login.";
+  const nemoHermesProviderIssue = !templateMode && runtime === "nemoclaw"
     ? nemoHermesProviderMessage(providerId, providerBaseUrl, credentialKeys)
     : "";
   const nemoHermesBlocked = Boolean(nemoHermesProviderIssue);
-  const nameHelp = runtime === "nemoclaw"
+  const nameHelp = effectiveRuntime === "nemoclaw"
     ? "NemoHermes sandbox names use lowercase letters, numbers, and hyphens. Up to 63 characters."
     : "Lowercase letters, numbers, hyphens, and underscores. Up to 63 characters.";
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    if (!valid || !targetReady || !telegramReady || nemoHermesBlocked) return;
+    if (!valid || !targetReady || !telegramReady || !templateReady || nemoHermesBlocked) return;
     setBusy(true);
     setError("");
     try {
+      const capabilities = {
+        ...(codexCli && runtime === "docker" ? { codexCli: true } : {}),
+        ...(sharedMemory && runtime === "docker" ? { sharedMemory: true } : {}),
+      };
       await onCreate(trimmed, {
-        camofox,
-        runtime,
+        camofox: templateMode ? true : camofox,
+        runtime: templateMode ? "docker" : runtime,
         nodeId: selectedNode.id,
-        telegram: telegramEnabled ? {
+        templateLibraryId: templateMode ? templateLibraryId : undefined,
+        capabilities: templateMode ? {} : capabilities,
+        telegram: !templateMode && telegramEnabled ? {
           enabled: true,
           botToken: telegramBotToken,
           botUsername: telegramBotUsername,
@@ -114,6 +127,10 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
         } : { enabled: false },
       });
       setName("");
+      setCreationMode("fresh");
+      setTemplateLibraryId("");
+      setCodexCli(false);
+      setSharedMemory(false);
       resetTelegram();
     } catch (err: any) {
       setError(apiErrorMessage(err, "Could not create agent"));
@@ -214,6 +231,16 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
     };
   }, [selectedNode.id, telegramEnabled, telegramPhase, telegramSetup]);
 
+  useEffect(() => {
+    if (!open) return;
+    api<{ templates: AgentTemplateLibraryItem[] }>("/api/template-library")
+      .then((data) => {
+        setTemplates(data.templates || []);
+        if (!templateLibraryId && data.templates?.[0]?.id) setTemplateLibraryId(data.templates[0].id);
+      })
+      .catch(() => setTemplates([]));
+  }, [open]);
+
   const telegramExpiry = useMemo(() => {
     if (!telegramSetup?.expiresAt) return "";
     const ms = Date.parse(telegramSetup.expiresAt) - Date.now();
@@ -227,6 +254,20 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
     if (!open) resetTelegram();
   }, [open]);
 
+  useEffect(() => {
+    if (codexCliDisabled) setCodexCli(false);
+  }, [codexCliDisabled]);
+
+  useEffect(() => {
+    if (creationMode !== "template") return;
+    setRuntime("docker");
+    setCodexCli(false);
+    setSharedMemory(false);
+    setTelegramEnabled(false);
+    resetTelegram();
+    if (!templateLibraryId && templates[0]?.id) setTemplateLibraryId(templates[0].id);
+  }, [creationMode, templates, templateLibraryId]);
+
   if (!open) return null;
 
   return (
@@ -239,6 +280,19 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
         <CardForm className="create-agent-form" onSubmit={submit}>
           <CardContent className="padded create-agent-content">
             <FieldGroup>
+              <Field>
+                <FieldLabel>Creation source</FieldLabel>
+                <label className={`create-agent-option ${creationMode === "fresh" ? "selected" : ""}`}>
+                  <Plus />
+                  <span className="create-agent-option-copy"><strong>Fresh agent</strong><small>Start from the standard Hermes baseline.</small></span>
+                  <Checkbox checked={creationMode === "fresh"} onChange={() => setCreationMode("fresh")} aria-label="Create a fresh agent" />
+                </label>
+                <label className={`create-agent-option ${templateMode ? "selected" : ""} ${templates.length ? "" : "disabled"}`}>
+                  <Library />
+                  <span className="create-agent-option-copy"><strong>From template</strong><small>Redeploy a saved secret-free agent template.</small></span>
+                  <Checkbox checked={templateMode} disabled={!templates.length} onChange={() => setCreationMode("template")} aria-label="Create from template" />
+                </label>
+              </Field>
               <Field>
                 <FieldLabel htmlFor="agent-node">Deploy on</FieldLabel>
                 <Select value={selectedNode.id} onValueChange={(value) => { setNodeId(value); resetTelegram(); }}>
@@ -260,7 +314,17 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
                 <Input id="agent-name" value={name} onChange={(event) => { setName(event.target.value); setError(""); }} placeholder="research-agent" autoFocus aria-invalid={Boolean(name && !valid)} />
                 <FieldDescription>{name && !valid ? `Use ${trimmed.replace(/_/g, "-") || "agent-name"}.` : nameHelp}</FieldDescription>
               </Field>
-              <Field>
+              {templateMode ? (
+                <Field>
+                  <FieldLabel>Template</FieldLabel>
+                  <Select value={templateLibraryId} onValueChange={setTemplateLibraryId}>
+                    <SelectTrigger><SelectValue placeholder="Select template" /></SelectTrigger>
+                    <SelectContent>{templates.map((template) => <SelectItem key={template.id} value={template.id}>{template.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                  <FieldDescription>{selectedTemplate ? `Captured from ${selectedTemplate.sourceInstance}.` : "Save a template in Settings first."}</FieldDescription>
+                </Field>
+              ) : null}
+              {!templateMode ? <Field>
                 <FieldLabel>Runtime</FieldLabel>
                 <label className={`create-agent-option ${runtime === "docker" ? "selected" : ""}`}>
                   <Server />
@@ -270,7 +334,7 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
                 <label className={`create-agent-option ${runtime === "nemoclaw" ? "selected" : ""}`}>
                   <Server />
                   <span className="create-agent-option-copy"><strong>NemoHermes</strong><small>Create a Hermes OpenShell sandbox with the nemohermes runner.</small></span>
-                  <Checkbox checked={runtime === "nemoclaw"} onChange={() => { setRuntime("nemoclaw"); setCamofox(false); }} aria-label="Use NemoHermes runtime" />
+                  <Checkbox checked={runtime === "nemoclaw"} onChange={() => { setRuntime("nemoclaw"); setCamofox(false); setCodexCli(false); setSharedMemory(false); }} aria-label="Use NemoHermes runtime" />
                 </label>
                 {runtime === "nemoclaw" ? (
                   <>
@@ -286,21 +350,31 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
                     <Alert variant="warning">If NemoHermes is missing on {selectedNode.local ? "this machine" : selectedNode.label}, Fleet will install it before creating the sandbox.</Alert>
                   </>
                 ) : null}
-              </Field>
-              <Field>
+              </Field> : null}
+              {!templateMode ? <Field>
                 <FieldLabel>Capabilities</FieldLabel>
                 <div className="create-agent-option create-agent-option-static">
                   <Globe2 />
                   <span className="create-agent-option-copy"><strong>Webhost</strong><small>Publish static pages and SPAs from workspace/web with a local and LAN URL.</small></span>
-                  <Badge variant="success">Included</Badge>
+                  <Badge variant="secondary">Included</Badge>
                 </div>
                 <label className={`create-agent-option ${camofox ? "selected" : ""} ${runtime === "nemoclaw" ? "disabled" : ""}`}>
                   <Monitor />
                   <span className="create-agent-option-copy"><strong>Browser runtime</strong><small>Include Camofox automation and a visual desktop endpoint.</small></span>
                   <Checkbox checked={camofox} disabled={runtime === "nemoclaw"} onChange={(event) => setCamofox(event.target.checked)} aria-label="Include browser and VNC" />
                 </label>
-              </Field>
-              <Field data-invalid={telegramIdInvalid || undefined}>
+                <label className={`create-agent-option ${codexCli ? "selected" : ""} ${codexCliDisabled ? "disabled" : ""}`}>
+                  <Terminal />
+                  <span className="create-agent-option-copy"><strong>Codex CLI</strong><small>{codexCliDescription}</small></span>
+                  <Checkbox checked={codexCli} disabled={codexCliDisabled} onChange={(event) => setCodexCli(event.target.checked)} aria-label="Install Codex CLI" />
+                </label>
+                <label className={`create-agent-option ${sharedMemory ? "selected" : ""} ${runtime === "nemoclaw" ? "disabled" : ""}`}>
+                  <Database />
+                  <span className="create-agent-option-copy"><strong>Shared memory</strong><small>Link this agent to Fleet shared memory during creation.</small></span>
+                  <Checkbox checked={sharedMemory} disabled={runtime === "nemoclaw"} onChange={(event) => setSharedMemory(event.target.checked)} aria-label="Link agent to shared memory" />
+                </label>
+              </Field> : null}
+              {!templateMode ? <Field data-invalid={telegramIdInvalid || undefined}>
                 <FieldLabel>Telegram</FieldLabel>
                 <label className={`create-agent-option ${telegramEnabled ? "selected" : ""}`}>
                   <MessageCircle />
@@ -337,15 +411,16 @@ export function CreateAgentModal({ open, onClose, onCreate, fleetNodes, globalCo
                     {telegramError ? <Alert variant="warning">{telegramError}</Alert> : null}
                   </div>
                 ) : null}
-              </Field>
+              </Field> : null}
             </FieldGroup>
             {!targetReady ? <Alert variant="warning">Select an online machine before creating an agent.</Alert> : null}
+            {templateMode && !templateReady ? <Alert variant="warning">Select a saved template before creating this agent.</Alert> : null}
             {telegramEnabled && !telegramReady ? <Alert variant="warning">Complete Telegram QR setup and enter a trusted account ID before creating this agent.</Alert> : null}
             {error ? <Alert variant="warning">{error}</Alert> : null}
           </CardContent>
           <CardFooter className="create-agent-footer">
             <Button variant="outline" type="button" onClick={onClose} disabled={busy || providerBusy}>Cancel</Button>
-            <Button disabled={!valid || !targetReady || !telegramReady || nemoHermesBlocked || busy || providerBusy}>
+            <Button disabled={!valid || !targetReady || !telegramReady || !templateReady || nemoHermesBlocked || busy || providerBusy}>
               {busy ? <Spinner data-icon="inline-start" /> : <Plus data-icon="inline-start" />}
               Create agent
             </Button>

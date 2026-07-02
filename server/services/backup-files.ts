@@ -62,6 +62,7 @@ export async function readJson(file: string) {
 
 export async function createArchive(stageDir: string, archivePath: string) {
   await ensureBackupDir();
+  await fs.mkdir(path.dirname(archivePath), { recursive: true, mode: 0o700 });
   await run("tar", ["-czf", archivePath, "-C", stageDir, "."], { timeout: 120000, maxBuffer: 1024 * 1024 * 8 });
 }
 

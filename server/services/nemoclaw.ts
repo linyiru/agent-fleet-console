@@ -308,6 +308,8 @@ export async function nemoHermesSnapshot(name: string) {
         clientPath: paymentsReady ? PAYMENTS_CLIENT_PATH : "",
         policy: paymentPolicy,
       },
+      codexCli: { ready: false, provider: "", client: "", clientPath: "" },
+      sharedMemory: { ready: false, provider: "" },
     },
     update: { status: "unknown", versionsBehind: null },
     drift: { status: "unknown", summary: "NemoHermes drift checks are not running" },

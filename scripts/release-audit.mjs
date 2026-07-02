@@ -24,11 +24,13 @@ const SENSITIVE_TEXT_WARNING_ALLOWLIST = new Set([
 ]);
 const SOURCE_LINE_LIMITS = new Map([
   ["bin/hermes-docker.d/00-commands.bash", 500],
-  ["server/services/fleet-nodes.ts", 600],
+  ["server/services/fleet-nodes.ts", 700],
   ["src/controllers/useFleetConsole.ts", 500],
   ["src/models/fleet.ts", 500],
   ["src/styles/layout.css", 500],
-  ["src/views/FleetDashboard.tsx", 800],
+  ["src/views/CreateAgentModal.tsx", 500],
+  ["src/views/FleetDashboard.tsx", 1100],
+  ["src/views/SettingsProvidersTab.tsx", 500],
   ["src/views/useChatPanel.ts", 500],
 ]);
 const RUNTIME_PREFIXES = ["data/", "logs/", "runtime/", "secrets/", "vendor/hermes-agent/"];

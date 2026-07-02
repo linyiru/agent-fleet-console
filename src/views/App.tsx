@@ -90,6 +90,7 @@ export function App() {
               instances={fleet.instances}
               pendingAction={fleet.pendingAction}
               onBackupAgent={fleet.backupAgent}
+              onCaptureTemplate={fleet.captureAgentTemplate}
               onCloneAgent={fleet.cloneAgent}
               onMoveAgent={fleet.moveAgent}
               onConnectTelegram={fleet.connectTelegram}

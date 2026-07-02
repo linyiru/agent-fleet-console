@@ -2,10 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { DEFAULT_PROVIDER_CONFIG } from "../catalog.ts";
 import { GLOBAL_CREDENTIALS_FILE, GLOBAL_OAUTH_DIR, GLOBAL_PROVIDER_FILE, GLOBAL_SYNC_FILE } from "../config.ts";
-import { parseEnv, readTextIfExists, setEnvValue, deleteEnvValue, writePrivateFile } from "../lib/env-file.ts";
+import { fileExists, parseEnv, readTextIfExists, setEnvValue, deleteEnvValue, writePrivateFile } from "../lib/env-file.ts";
 import { applyProviderConfigToFile } from "./templates.ts";
-import { homeDir } from "./compose.ts";
-import { applyGlobalOAuthToInstance, oauthSummaries } from "./oauth.ts";
+import { homeDir, workspaceDir } from "./compose.ts";
+import { applyCodexCliAuthToInstance, applyGlobalOAuthToInstance, oauthSummaries } from "./oauth.ts";
 
 function credentialSummary(key: string, value: string) {
   return {
@@ -107,7 +107,10 @@ export async function applyGlobalConfigToInstance(name: string) {
   const provider = await globalProviderConfig();
   if (provider) await applyProviderConfigToFile(path.join(homeDir(name), "config.yaml"), provider);
   const oauth = await applyGlobalOAuthToInstance(name);
-  return { credentialCount: Object.keys(credentials).length, providerApplied: Boolean(provider), ...oauth };
+  const codexCliConfigured = await fileExists(path.join(workspaceDir(name), "HERMES_CODEX_CLI.md"))
+    || await fileExists(path.join(homeDir(name), ".codex", "auth.json"));
+  const codexCliAuth = codexCliConfigured ? await applyCodexCliAuthToInstance(name) : { codexCliAuthApplied: false };
+  return { credentialCount: Object.keys(credentials).length, providerApplied: Boolean(provider), ...oauth, ...codexCliAuth };
 }
 
 export async function syncGlobalConfigToInstances(names: string[], options: { recordFullSync?: boolean } = {}) {

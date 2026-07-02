@@ -115,7 +115,7 @@ export async function inspectBackup(archivePath: string) {
   return { manifest, conflicts };
 }
 
-async function deployFresh(name: string, dependencies: any) {
+export async function deployFresh(name: string, dependencies: any) {
   const ports = await allocateInstancePorts(dependencies?.camofox !== false);
   const args = ["deploy", name, "--dashboard-port", String(ports.dashboard), "--health-port", String(ports.health), "--web-port", String(ports.web)];
   if (ports.vnc) args.push("--vnc-port", String(ports.vnc));

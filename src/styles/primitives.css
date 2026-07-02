@@ -64,6 +64,7 @@
   .ui-badge-outline { @apply border-line bg-panel text-ink; }
   .ui-badge-success { @apply border-emerald-200 bg-emerald-50 text-emerald-800; }
   .ui-badge-warning { @apply border-amber-200 bg-amber-50 text-amber-800; }
+  .ui-badge-destructive { @apply border-rose-200 bg-rose-50 text-rose-800; }
   .ui-button { @apply inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md border px-3 text-sm font-medium transition duration-150 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 disabled:pointer-events-none disabled:opacity-50; transition-timing-function: cubic-bezier(0.22,1,0.36,1); }
   .ui-button-default { @apply border-ink bg-ink text-card shadow-[0_8px_20px_oklch(25%_0.01_255/0.14)] hover:bg-ink/90; }
   .ui-button-outline { @apply border-line bg-card text-ink shadow-none hover:border-edge hover:bg-[oklch(95.5%_0.006_255)]; }

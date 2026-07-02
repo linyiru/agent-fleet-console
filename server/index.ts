@@ -1,6 +1,6 @@
 import http from "node:http";
 import { createApp } from "./app.ts";
-import { HOST, PORT, ROOT, validateExposureConfig, validators } from "./config.ts";
+import { AUTH_TOKEN, HOST, PORT, ROOT, validateExposureConfig, validators } from "./config.ts";
 import { createTerminalUpgradeHandler } from "./terminal.ts";
 import { createFleetTerminalUpgradeHandler } from "./fleet-terminal.ts";
 import { upgradeAuthorized } from "./auth.ts";
@@ -36,6 +36,10 @@ server.on("upgrade", (req, socket) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`Hermes Fleet Console listening on http://${HOST}:${PORT}`);
+  if (AUTH_TOKEN) {
+    const base = process.env.HERMES_CONSOLE_DEV_FRONTEND_URL || `http://127.0.0.1:${PORT}`;
+    console.log(`Sign in without pasting the token: ${base}/?token=${encodeURIComponent(AUTH_TOKEN)}`);
+  }
 });
 
 processJobs();

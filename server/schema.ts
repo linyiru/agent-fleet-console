@@ -23,6 +23,20 @@ export function initializeDatabase(db, { builtinTemplates, nowIso }) {
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS template_library (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      source_instance TEXT NOT NULL,
+      source_node_id TEXT NOT NULL DEFAULT 'local',
+      archive_file TEXT NOT NULL,
+      archive_path TEXT NOT NULL,
+      size INTEGER NOT NULL DEFAULT 0,
+      manifest_json TEXT NOT NULL DEFAULT '{}',
+      requirements_json TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
     CREATE TABLE IF NOT EXISTS instance_meta (
       instance TEXT PRIMARY KEY,
       template_id TEXT,
@@ -125,6 +139,7 @@ export function initializeDatabase(db, { builtinTemplates, nowIso }) {
     CREATE INDEX IF NOT EXISTS idx_events_created ON events(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_jobs_status_created ON jobs(status, created_at);
     CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_template_library_created ON template_library(created_at DESC);
   `);
   
   ensureTableColumns(db, "instance_meta", [

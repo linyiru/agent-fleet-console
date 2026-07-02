@@ -13,6 +13,7 @@ import { createTerminalTicket } from "../services/terminal-tickets.ts";
 import { readPaymentPolicy, writePaymentPolicy } from "../services/payment-policy.ts";
 import { readCronEntries } from "../services/crons.ts";
 import { gatewayResponseForInstance } from "../services/gateway.ts";
+import { codexCliAuthPayload } from "../services/oauth.ts";
 
 function requireRiskConfirmation(action: string, payload: any = {}) {
   if (action === "start") return;
@@ -31,12 +32,22 @@ export function registerInstanceRoutes(router: Router) {
     }
   });
 
-  router.post("/instances", (req, res) => {
+  router.post("/instances", async (req, res, next) => {
+    try {
     const name = validators.validateName(req.body?.name || "");
     const runtime = validators.normalizeCreateRuntime(req.body?.runtime || "docker");
     if (runtime === "nemoclaw") validators.validateNemoClawName(name);
     const dependencies = validators.normalizeCreateDependencies(req.body?.dependencies || {});
     const capabilities = validators.normalizeCreateCapabilities(req.body?.capabilities || {});
+    if (runtime === "nemoclaw" && capabilities.codexCli) {
+      return res.status(400).json({ error: "Codex CLI capability is only supported for Docker Hermes agents." });
+    }
+    if (runtime === "nemoclaw" && capabilities.sharedMemory) {
+      return res.status(400).json({ error: "Shared memory capability is only supported for Docker Hermes agents." });
+    }
+    if (capabilities.codexCli && !await codexCliAuthPayload()) {
+      return res.status(409).json({ error: "Codex CLI capability requires a saved Codex device login in Fleet settings." });
+    }
     const contextFiles = validators.normalizeCreateContextFiles(req.body?.contextFiles || {});
     const telegram = validators.normalizeCreateTelegramSetup(req.body?.telegram || {});
     res.status(202).json({ job: createJob("create", name, {
@@ -48,6 +59,9 @@ export function registerInstanceRoutes(router: Router) {
       contextFiles,
       telegram,
     }, req.ip || "local") });
+    } catch (error) {
+      next(error);
+    }
   });
 
   router.get("/instances/:name", async (req, res, next) => {

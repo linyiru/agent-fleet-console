@@ -26,9 +26,11 @@ Fleet is designed for technical operators running personal or team-controlled ag
 - Saves fleet-wide provider defaults for OpenAI Codex, Ollama, Custom endpoints, and OpenRouter.
 - Stores shared provider credentials in ignored local files and syncs them into selected agents.
 - Supports Codex device login and controlled sync of Codex auth state into agents.
+- Can install Codex CLI into new Docker agents and seed it from the same saved Codex device login.
 - Creates Telegram-enabled agents through the onboarding pairing flow.
 - Publishes static files from each agent workspace through a per-agent webhost sidecar.
 - Backs up, restores, and clones agents while excluding secrets unless an operator explicitly opts in.
+- Saves secret-free Docker agent templates that can be redeployed repeatedly to local or remote Fleet nodes.
 - Runs release and setup audits that keep runtime state, tokens, logs, and oversized source files out of git.
 
 ## Requirements
@@ -98,6 +100,8 @@ HERMES_AGENT_AUTO_CLONE=0
 - [Documentation index](docs/index.md)
 - [Getting started](docs/getting-started.md)
 - [Operator guide](docs/operator-guide.md)
+- [Shared memory guide](docs/shared-memory.md)
+- [Template library guide](docs/template-library.md)
 - [Configuration reference](docs/configuration.md)
 - [API reference](docs/api-reference.md)
 - [Codebase guide](docs/codebase.md)
@@ -202,6 +206,8 @@ HERMES_CONSOLE_REQUIRE_AUTH=1
 
 The server refuses non-loopback binds unless `HERMES_CONSOLE_TOKEN` is set. `npm run setup` prompts for or generates a token when LAN binding or required auth needs one. For local-only use, set `HERMES_CONSOLE_HOST=127.0.0.1`.
 
+On startup the console prints a one-click sign-in link (`http://127.0.0.1:5180/?token=...`). Opening it stores the token in that browser and removes it from the address bar, so you never paste the token manually. The same `?token=` parameter works on any console URL you share with a trusted browser.
+
 Treat Fleet as a control plane. It can start and stop containers, open terminals, sync credentials, restore backups, create agents, proxy remote node actions, and optionally run self-update commands. Keep individual Hermes dashboards, Camofox VNC endpoints, and agent webhosts private unless you intentionally protect and expose them.
 
 ## Fleet Nodes
@@ -211,6 +217,17 @@ Fleet Nodes let one console coordinate other Fleet consoles on trusted machines.
 The dashboard then merges local and remote agents, shows the host for each row, and routes create, start, stop, restart, update, delete, clone, backup, chat, gateway, terminal, and detail actions through the selected node.
 
 Remote node bearer tokens are redacted in API responses but stored locally in `data/fleet.db`; keep `data/` private and use disk encryption on shared machines.
+
+## Shared Memory
+
+Shared memory gives linked agents a second Mnemosyne store they can all recall from and contribute to, alongside their own private memory. Private memory remains per-agent; shared memory is only for durable fleet knowledge that every linked agent may use. It is managed in **Fleet settings -> Shared memory**.
+
+- **Hub** - the console runs a single Mnemosyne MCP server (`hermes-shared-memory-hub` container, default port `5190`, override with `HERMES_SHARED_MEMORY_PORT`). It reuses the existing agent image, protects every request with a generated bearer token, and stores its database under `data/shared-memory/`.
+- **Linking an agent** adds a managed `fleet-shared-memory` MCP entry to the agent's `config.yaml` and installs a `skills/fleet-shared-memory` skill that teaches the agent when to recall, what belongs in shared memory, and to attribute its entries. Existing block-style custom MCP servers are preserved when Fleet can merge safely. Running agents restart automatically so the tools load immediately; stopped agents pick it up on next start. New Docker Hermes agents can be linked from the New agent modal by selecting the Shared memory capability. Unlinking removes both cleanly and reloads running agents.
+- **Linked agents** keep their private Mnemosyne tools and also get four Fleet MCP tools: `fleet_shared_memory_recall`, `fleet_shared_memory_remember`, `fleet_shared_memory_forget`, and `fleet_shared_memory_stats`. The hub intentionally uses distinct names so agents do not confuse Fleet shared memory with private or local Mnemosyne tools such as `mnemosyne_recall` or `mnemosyne_shared_recall`.
+- **Operators** can browse, semantically search, add, and delete entries from the Shared memory tab. Console-written entries are attributed to `console`.
+
+Agents on remote Fleet nodes can join by pointing their console at the same hub URL and token; each node's console manages its own links. See the [Shared memory guide](docs/shared-memory.md) for the memory model, linking flow, and troubleshooting.
 
 ## Backups, Restore, And Clone
 
@@ -223,6 +240,20 @@ data/backups/
 Backups include agent config, selected workspace files, provider defaults, and a manifest. Secrets such as `home/.env`, global credentials, OAuth state, token-like files, and generated runtime secrets are excluded unless an operator explicitly enables secret export.
 
 Restore uses a local `.tar.gz` archive path on the console host. Restored agents receive fresh generated ports and runtime secrets. Clone duplicates a local agent into a new name and can optionally include workspace files and local per-agent credentials.
+
+## Template Library
+
+Open **Fleet settings -> Templates** or use **Save as template** from a local Docker agent's portability actions.
+
+Templates are reusable, secret-free single-agent captures stored under:
+
+```text
+data/template-library/
+```
+
+Template capture excludes `home/.env`, Codex CLI auth, token-like files, credential directories, generated workspace folders, and Fleet shared-memory bearer config. Fleet records required secret names only, then checks the target node before deploy. If a template needs credentials or Codex device login that the target node does not have, deploy returns `409` unless the operator chooses to deploy anyway and finish auth later.
+
+Deploying a template creates a fresh Docker Hermes agent with fresh ports and runtime identity, restores the sanitized home/workspace state, and rehydrates target-side auth and capabilities such as Codex CLI and shared memory from the target Fleet node. See the [Template library guide](docs/template-library.md) for the full capture, sanitization, and remote deploy model.
 
 ## Project Layout
 

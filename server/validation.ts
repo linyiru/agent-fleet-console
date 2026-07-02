@@ -173,9 +173,13 @@ export function createValidators(options) {
     normalizeCreateCapabilities(value = {}) {
       const input = value && typeof value === "object" && !Array.isArray(value) ? value : {};
       for (const key of Object.keys(input)) {
-        if (key !== "payments") throw badRequest(`Unsupported capability: ${key}`);
+        if (!["codexCli", "payments", "sharedMemory"].includes(key)) throw badRequest(`Unsupported capability: ${key}`);
       }
-      return { payments: (input as Record<string, unknown>).payments === true };
+      return {
+        codexCli: (input as Record<string, unknown>).codexCli === true,
+        payments: (input as Record<string, unknown>).payments === true,
+        sharedMemory: (input as Record<string, unknown>).sharedMemory === true,
+      };
     },
     normalizeCreateRuntime(value = "docker") {
       return ensureOneOf(value || "docker", ["docker", "nemoclaw"], "Invalid runtime");

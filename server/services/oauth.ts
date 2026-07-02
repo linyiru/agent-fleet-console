@@ -43,6 +43,35 @@ function oauthFile(provider: string) {
   return path.join(GLOBAL_OAUTH_DIR, `${provider}.json`);
 }
 
+function decodeJwtClaims(token = "") {
+  const payload = String(token || "").split(".")[1] || "";
+  if (!payload) return {};
+  try {
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(Buffer.from(normalized, "base64").toString("utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function codexAccountId(tokens: any) {
+  const idClaims: any = decodeJwtClaims(tokens.id_token);
+  const accessClaims: any = decodeJwtClaims(tokens.access_token);
+  const idAuth = idClaims?.["https://api.openai.com/auth"] || {};
+  const accessAuth = accessClaims?.["https://api.openai.com/auth"] || {};
+  return String(
+    tokens.account_id
+    || idAuth.chatgpt_account_id
+    || accessAuth.chatgpt_account_id
+    || accessAuth.poid
+    || "",
+  ).trim();
+}
+
+async function readCodexOAuthPayload() {
+  return JSON.parse(await readTextIfExists(oauthFile("openai-codex")) || "null");
+}
+
 async function hermesPython() {
   const candidates = [
     path.join(HERMES_AGENT_SRC, "venv", "bin", "python"),
@@ -169,13 +198,42 @@ export function getOauthSession(provider: string, id: string) {
 }
 
 export async function oauthSummaries() {
-  const file = oauthFile("openai-codex");
-  const payload = JSON.parse(await readTextIfExists(file) || "null");
+  const payload = await readCodexOAuthPayload();
   return payload ? [{ provider: "openai-codex", label: payload.label, savedAt: payload.saved_at }] : [];
 }
 
+export async function codexCliAuthPayload() {
+  const payload = await readCodexOAuthPayload();
+  const tokens = payload?.tokens || {};
+  if (!tokens.access_token || !tokens.id_token || !tokens.refresh_token) return null;
+  const accountId = codexAccountId(tokens);
+  return {
+    auth_mode: "chatgpt",
+    OPENAI_API_KEY: null,
+    tokens: {
+      id_token: tokens.id_token,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+      ...(accountId ? { account_id: accountId } : {}),
+    },
+    last_refresh: new Date(payload.saved_at || Date.now()).toISOString(),
+  };
+}
+
+export async function applyCodexCliAuthToInstance(name: string, options: { required?: boolean } = {}) {
+  const auth = await codexCliAuthPayload();
+  if (!auth) {
+    if (options.required) {
+      throw Object.assign(new Error("Codex CLI capability requires a saved Codex device login. Open Fleet settings -> Model & auth, complete Codex device login, then create this agent again."), { status: 409 });
+    }
+    return { codexCliAuthApplied: false };
+  }
+  await writePrivateFile(path.join(homeDir(name), ".codex", "auth.json"), `${JSON.stringify(auth, null, 2)}\n`);
+  return { codexCliAuthApplied: true };
+}
+
 export async function applyGlobalOAuthToInstance(name: string) {
-  const payload = JSON.parse(await readTextIfExists(oauthFile("openai-codex")) || "null");
+  const payload = await readCodexOAuthPayload();
   if (!payload?.tokens?.access_token) return { oauthCredentialCount: 0 };
   const script = `
 import json, sys, uuid

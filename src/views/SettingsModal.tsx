@@ -1,4 +1,4 @@
-import { Archive, KeyRound, Network, Settings2, X } from "lucide-react";
+import { Archive, Brain, KeyRound, Library, Network, Settings2, X } from "lucide-react";
 import { FormEvent, useCallback, useEffect, useMemo, useState, type ComponentType } from "react";
 import type { AgentSyncTarget, FleetNode, GlobalConfig, Instance, OAuthSession, ProviderCatalog, ProviderConfig } from "../models/fleet.ts";
 import { api, apiErrorMessage, deleteJson, postJson } from "../controllers/api.ts";
@@ -9,11 +9,13 @@ import { credentialKeyError } from "../controllers/credentials.ts";
 import { SettingsProvidersTab } from "./SettingsProvidersTab.tsx";
 import { BackupRestorePanel } from "./BackupRestorePanel.tsx";
 import { SettingsFleetNodesTab } from "./SettingsFleetNodesTab.tsx";
+import { SettingsSharedMemoryTab } from "./SettingsSharedMemoryTab.tsx";
+import { TemplateLibraryPanel } from "./TemplateLibraryPanel.tsx";
 import { classNames } from "../controllers/format.ts";
 
 const MIN_PENDING_MS = 350;
 const DEFAULT_PROVIDER: ProviderConfig = { provider: "openai-codex", model: "gpt-5.5", baseUrl: "https://chatgpt.com/backend-api/codex" };
-const SETTINGS_SECTIONS = ["provider", "credentials", "nodes", "backups"] as const;
+const SETTINGS_SECTIONS = ["provider", "credentials", "memory", "templates", "nodes", "backups"] as const;
 type SettingsSection = typeof SETTINGS_SECTIONS[number];
 
 type SettingsScreenProps = {
@@ -205,6 +207,20 @@ export function SettingsScreen({
             onClick={() => chooseSection("credentials")}
           />
           <SettingsRailButton
+            active={activeSection === "memory"}
+            detail="Cross-agent knowledge"
+            icon={Brain}
+            label="Shared memory"
+            onClick={() => chooseSection("memory")}
+          />
+          <SettingsRailButton
+            active={activeSection === "templates"}
+            detail="Reusable agents"
+            icon={Library}
+            label="Templates"
+            onClick={() => chooseSection("templates")}
+          />
+          <SettingsRailButton
             active={activeSection === "backups"}
             detail={`${instances.length} agents`}
             icon={Archive}
@@ -222,6 +238,10 @@ export function SettingsScreen({
         <div className="settings-workspace">
           {activeSection === "backups" ? (
             <BackupRestorePanel instances={instances} />
+          ) : activeSection === "templates" ? (
+            <TemplateLibraryPanel instances={instances} fleetNodes={fleetNodes} onRefreshFleet={onRefreshFleet} />
+          ) : activeSection === "memory" ? (
+            <SettingsSharedMemoryTab instances={instances} />
           ) : activeSection === "nodes" ? (
             <SettingsFleetNodesTab nodes={fleetNodes} onRefresh={onRefreshFleet} />
           ) : (

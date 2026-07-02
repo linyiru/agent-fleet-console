@@ -5,6 +5,9 @@ import { run } from "../lib/process.ts";
 import { homeDir, instanceDir } from "./compose.ts";
 import { PAYMENTS_ACCOUNT, PAYMENTS_CLIENT, PAYMENTS_CLIENT_PATH, PAYMENTS_SKILL } from "./payment-constants.ts";
 import { readPaymentPolicy } from "./payment-policy.ts";
+import { isSharedMemoryConfig } from "./shared-memory-config.ts";
+
+const CODEX_CLI_CLIENT_PATH = "/opt/data/bin/codex";
 
 export async function readConfig(name: string) {
   const env = parseEnv(await readTextIfExists(`${homeDir(name)}/.env`));
@@ -90,7 +93,7 @@ function hasAnyEnv(env: Record<string, string>, keys: string[]) {
 
 export async function readCapabilities(name: string, env: Record<string, string>, config: Record<string, string>, memory: any, dependencies: Record<string, boolean>) {
   const workspacePath = `${instanceDir(name)}/workspace`;
-  const [workspace, git, soul, projectContext, webInstructions, webRoot, paymentsInstructions] = await Promise.all([
+  const [workspace, git, soul, projectContext, webInstructions, webRoot, paymentsInstructions, codexCliInstructions, codexCliAuth, agentConfig] = await Promise.all([
     fileExists(workspacePath),
     fileExists(`${workspacePath}/.git`),
     fileExists(`${homeDir(name)}/SOUL.md`),
@@ -99,9 +102,13 @@ export async function readCapabilities(name: string, env: Record<string, string>
     fileExists(`${workspacePath}/HERMES_WEB.md`),
     fileExists(`${workspacePath}/web`),
     fileExists(`${workspacePath}/HERMES_PAYMENTS.md`),
+    fileExists(`${workspacePath}/HERMES_CODEX_CLI.md`),
+    fileExists(`${homeDir(name)}/.codex/auth.json`),
+    readTextIfExists(`${homeDir(name)}/config.yaml`),
   ]);
   const paymentPolicy = paymentsInstructions ? await readPaymentPolicy(name) : null;
   const providerReady = Boolean(String(config.provider || "").trim() && String(config.model || "").trim());
+  const sharedMemory = isSharedMemoryConfig(agentConfig);
   return {
     model: { ready: providerReady || hasAnyEnv(env, ["OPENAI_API_KEY", "OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "ANTHROPIC_TOKEN", "GOOGLE_API_KEY", "GEMINI_API_KEY", "XAI_API_KEY"]), provider: config.provider || "", model: config.model || "" },
     memory: { ready: Boolean(memory?.ok), provider: memory?.provider || "", lastWrite: memory?.lastWrite || "" },
@@ -117,6 +124,13 @@ export async function readCapabilities(name: string, env: Record<string, string>
       clientPath: paymentsInstructions ? PAYMENTS_CLIENT_PATH : "",
       policy: paymentPolicy,
     },
+    codexCli: {
+      ready: codexCliInstructions && codexCliAuth,
+      provider: codexCliInstructions ? "openai-codex" : "",
+      client: codexCliInstructions ? "codex" : "",
+      clientPath: codexCliInstructions ? CODEX_CLI_CLIENT_PATH : "",
+    },
+    sharedMemory: { ready: sharedMemory, provider: sharedMemory ? "fleet-shared-memory" : "" },
     github: { ready: hasAnyEnv(env, ["GITHUB_TOKEN", "GH_TOKEN"]) },
     email: { ready: hasAnyEnv(env, ["GMAIL_TOKEN", "GOOGLE_OAUTH_ACCESS_TOKEN", "GOOGLE_API_KEY", "SMTP_HOST"]) },
     social: { ready: hasAnyEnv(env, ["X_API_KEY", "X_BEARER_TOKEN", "TWITTER_API_KEY", "TWITTER_BEARER_TOKEN", "LINKEDIN_ACCESS_TOKEN"]) },

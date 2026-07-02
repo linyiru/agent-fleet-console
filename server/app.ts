@@ -8,7 +8,9 @@ import { registerInstanceRoutes } from "./routes/instances.ts";
 import { registerSystemRoutes } from "./routes/system.ts";
 import { registerBackupRoutes } from "./routes/backups.ts";
 import { registerFleetRoutes } from "./routes/fleet.ts";
+import { registerSharedMemoryRoutes } from "./routes/shared-memory.ts";
 import { registerTelegramRoutes } from "./routes/telegram.ts";
+import { registerTemplateLibraryRoutes } from "./routes/template-library.ts";
 
 function requestHostname(requestHost = "") {
   const value = requestHost.trim();
@@ -39,8 +41,10 @@ export function createApp() {
   registerSystemRoutes(router);
   registerFleetRoutes(router);
   registerBackupRoutes(router);
+  registerTemplateLibraryRoutes(router);
   registerGlobalConfigRoutes(router);
   registerInstanceRoutes(router);
+  registerSharedMemoryRoutes(router);
   registerTelegramRoutes(router);
   app.use("/api", router);
 

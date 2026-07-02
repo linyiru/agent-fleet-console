@@ -77,7 +77,10 @@ Content-Type: application/json
   "dependencies": {
     "camofox": true
   },
-  "capabilities": {},
+  "capabilities": {
+    "codexCli": true,
+    "sharedMemory": true
+  },
   "contextFiles": {},
   "telegram": {
     "enabled": false
@@ -270,6 +273,108 @@ Credential payload:
   "value": "replace-with-secret-value"
 }
 ```
+
+## Shared Memory Endpoints
+
+These routes operate on the local console's shared-memory hub and local agents. Remote Fleet nodes manage their own local links through their own console.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/shared-memory` | Hub status, linked-agent state, and supported entry kinds |
+| `POST` | `/api/shared-memory/hub` | Start or stop the hub with `{ "action": "start" }` or `{ "action": "stop" }` |
+| `GET` | `/api/shared-memory/entries` | List recent entries, or search with `?query=...`; optional `limit` |
+| `POST` | `/api/shared-memory/entries` | Add a shared entry as `console` |
+| `DELETE` | `/api/shared-memory/entries/:id` | Delete a shared entry |
+| `POST` | `/api/shared-memory/agents/:name/link` | Link an agent, install the skill, and restart it if running |
+| `DELETE` | `/api/shared-memory/agents/:name/link` | Unlink an agent, remove the skill, and restart it if running |
+
+Add-entry payload:
+
+```json
+{
+  "content": "Matt prefers concise agent reports.",
+  "kind": "preference",
+  "importance": 0.8
+}
+```
+
+Supported kinds are:
+
+```text
+meta
+preference
+correction
+identity
+```
+
+Link responses indicate whether Fleet reloaded the agent immediately:
+
+```json
+{
+  "name": "research-agent",
+  "linked": true,
+  "restarted": true,
+  "restartRequired": false
+}
+```
+
+The same link flow can run during agent creation by setting `capabilities.sharedMemory` to `true` in the create-agent payload. The shared-memory hub exposes only `fleet_shared_memory_*` tools to linked agents. Private agent memory remains available through each agent's own local Mnemosyne tools, not through the shared hub. The distinct Fleet names avoid collisions with local Mnemosyne tools such as `mnemosyne_shared_recall`.
+
+## Codex CLI Capability
+
+Set `capabilities.codexCli` to `true` when creating a Docker Hermes agent to install `@openai/codex` into that agent's persistent home. Fleet writes `/opt/data/.codex/auth.json` from the saved OpenAI Codex device login used by the `openai-codex` provider, so the agent does not need a separate `codex login`.
+
+Local creates return `409` if no Codex device login has been saved in Fleet settings. Remote Fleet nodes validate against their own saved Codex login.
+
+## Template Library Endpoints
+
+Template library archives are reusable, single-agent Docker Hermes captures. They never include secret values. Fleet stores only required secret names and checks the target node before deploy.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/template-library` | List saved templates |
+| `POST` | `/api/template-library/capture` | Capture one local Docker agent as a secret-free template |
+| `POST` | `/api/template-library/requirements/check` | Check an ad hoc requirements object against the local node |
+| `POST` | `/api/template-library/archive/deploy` | Queue target-side deploy from an imported archive path |
+| `POST` | `/api/template-library/:id/requirements/check` | Check target-node credentials and OAuth requirements |
+| `POST` | `/api/template-library/:id/deploy` | Queue deploy to local or remote Fleet node |
+| `DELETE` | `/api/template-library/:id` | Delete a template and its archive |
+
+Capture payload:
+
+```json
+{
+  "sourceName": "research-agent",
+  "name": "Research baseline",
+  "description": "Browser and workspace context configured",
+  "includeWorkspace": true
+}
+```
+
+Deploy payload:
+
+```json
+{
+  "targetNodeId": "local",
+  "name": "research-agent-copy",
+  "start": true,
+  "allowMissingRequirements": false
+}
+```
+
+Requirement check response:
+
+```json
+{
+  "ok": false,
+  "missing": [
+    { "type": "oauth", "key": "openai-codex", "label": "openai-codex device login" },
+    { "type": "credential", "key": "TELEGRAM_BOT_TOKEN", "label": "Credential TELEGRAM_BOT_TOKEN" }
+  ]
+}
+```
+
+Deploy returns `409` when requirements are missing and `allowMissingRequirements` is not true. Remote deploy uploads the sanitized archive to the target Fleet node and queues the target node's deploy job.
 
 ## Backup Endpoints
 

@@ -1,6 +1,7 @@
 import { CopyPlus, X } from "lucide-react";
 import { FormEvent, useState } from "react";
 import type { AgentCloneOptions, Instance } from "../models/fleet.ts";
+import { AGENT_NAME_PATTERN, slugifyAgentName } from "../models/fleet.ts";
 import { Button } from "../components/ui/button.tsx";
 import { CardContent, CardFooter, CardForm } from "../components/ui/card.tsx";
 import { Checkbox } from "../components/ui/checkbox.tsx";
@@ -9,12 +10,6 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "../components/u
 import { Input } from "../components/ui/input.tsx";
 import { Spinner } from "../components/ui/spinner.tsx";
 import { toast } from "sonner";
-
-const NAME_PATTERN = /^[a-z0-9](?:[a-z0-9_-]{0,61}[a-z0-9])?$/;
-
-function slugify(value: string) {
-  return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "").slice(0, 63);
-}
 
 export function AgentCloneModal({ open, selected, onClose, onClone }: {
   open: boolean;
@@ -28,8 +23,8 @@ export function AgentCloneModal({ open, selected, onClose, onClone }: {
   const [start, setStart] = useState(true);
   const [busy, setBusy] = useState(false);
   if (!open) return null;
-  const newName = slugify(name);
-  const valid = NAME_PATTERN.test(newName) && newName !== selected.name;
+  const newName = slugifyAgentName(name);
+  const valid = AGENT_NAME_PATTERN.test(newName) && newName !== selected.name;
 
   async function submit(event: FormEvent) {
     event.preventDefault();

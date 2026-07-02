@@ -227,6 +227,14 @@ HERMES_GLOBAL_SYNC_FILE=./secrets/global-sync.json
 
 Codex device login stores auth state under the OAuth directory. Sync metadata is stored in the sync file.
 
+When a Docker Hermes agent is created with the Codex CLI capability, Fleet derives the CLI auth file from that same saved device login:
+
+```text
+<agent>/home/.codex/auth.json
+```
+
+The CLI itself is installed into the agent home under `<agent>/home/.npm-global/`, with a stable wrapper at `<agent>/home/bin/codex`.
+
 ## Agent Directory Layout
 
 A Docker agent typically has:
@@ -264,6 +272,38 @@ data/fleet.db
 
 Remote tokens are stored locally so the coordinator can poll and proxy actions. Tokens are redacted in API responses but plaintext at rest in the database. Keep `data/` private.
 
+## Shared Memory Storage
+
+Fleet shared memory is stored separately from each agent's private memory.
+
+Per-agent private memory lives under the agent home, for example:
+
+```text
+<agent>/home/mnemosyne/
+```
+
+Fleet shared memory lives under the console data directory:
+
+```text
+data/shared-memory/
+  hub.env
+  hub-launcher.py
+  db/mnemosyne.db
+  cache/
+```
+
+`hub.env` contains the generated bearer token used by linked agents to reach the shared-memory hub. Keep it private.
+
+`db/mnemosyne.db` is the shared store that every linked agent can read from and write to through `fleet_shared_memory_*` tools.
+
+The hub listens on port `5190` by default:
+
+```env
+HERMES_SHARED_MEMORY_PORT=5190
+```
+
+Agents are linked by adding a managed `fleet-shared-memory` entry to `<agent>/home/config.yaml` and installing `<agent>/home/skills/fleet-shared-memory/SKILL.md`. If `mcp_servers` already contains other block-style MCP servers, Fleet preserves them and merges its own entry. Running agents restart automatically after link or unlink so the active process sees the change.
+
 ## Backups
 
 Backups are stored under:
@@ -275,6 +315,27 @@ data/backups/
 Backup export can include selected agents, selected workspace content, provider defaults, and a manifest. Secret export is opt-in.
 
 Restore validates archive entries before extraction and rejects absolute paths, parent traversal, symlinks, and hardlinks.
+
+## Template Library
+
+Reusable Docker agent templates are stored under:
+
+```text
+data/template-library/
+```
+
+Metadata is stored in the local SQLite database in `template_library`.
+
+Templates are stricter than backups. They are always secret-free and omit:
+
+- `home/.env`
+- Codex CLI auth files
+- token-like and credential-like files
+- known auth directories
+- generated workspace folders
+- managed Fleet shared-memory bearer-token config
+
+The template manifest records required credential key names and OAuth provider names only. Deploy checks those requirements against the target node's current Fleet settings before creating the new agent.
 
 ## Example Local-Only `.env`
 

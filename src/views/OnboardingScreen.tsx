@@ -23,8 +23,7 @@ const CHECK_LABELS: Record<string, string> = {
 };
 
 function checkVariant(check: BaselineCheck) {
-  if (check.ok) return "success";
-  return check.severity === "warn" ? "warning" : "secondary";
+  return check.severity === "warn" ? "warning" as const : "destructive" as const;
 }
 
 function checkIcon(check: BaselineCheck) {
@@ -208,7 +207,7 @@ function CheckRow({ check }: { check: BaselineCheck }) {
         <span>{check.detail || (check.ok ? "Ready" : "Needs attention")}</span>
         {!check.ok && check.fix ? <small>{check.fix}</small> : null}
       </div>
-      <Badge className="onboarding-check-badge" variant={checkVariant(check)}>{check.ok ? "Ready" : check.severity === "warn" ? "Warning" : "Required"}</Badge>
+      {check.ok ? null : <Badge className="onboarding-check-badge" variant={checkVariant(check)}>{check.severity === "warn" ? "Warning" : "Required"}</Badge>}
     </article>
   );
 }

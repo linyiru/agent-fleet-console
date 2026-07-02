@@ -20,8 +20,11 @@ export type CreateAgentOptions = {
   camofox: boolean;
   nodeId?: string;
   runtime: "docker" | "nemoclaw";
+  templateLibraryId?: string;
   capabilities?: {
+    codexCli?: boolean;
     payments?: boolean;
+    sharedMemory?: boolean;
   };
   telegram?: {
     enabled: boolean;
@@ -82,6 +85,9 @@ export type Instance = {
     model?: string;
     client?: string;
     account?: string;
+    command?: string;
+    package?: string;
+    path?: string;
     skill?: string;
     clientPath?: string;
     policy?: PaymentPolicy | null;
@@ -242,6 +248,28 @@ export type FleetNode = {
   } | null;
 };
 
+export const LOCAL_FLEET_NODE: FleetNode = {
+  id: "local",
+  label: "Local Docker",
+  baseUrl: "http://127.0.0.1:5180",
+  enabled: true,
+  local: true,
+  status: "online",
+};
+
+export const AGENT_NAME_PATTERN = /^[a-z0-9](?:[a-z0-9_-]{0,61}[a-z0-9])?$/;
+export const NEMOCLAW_AGENT_NAME_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+
+export function slugifyAgentName(value: string, options: { allowUnderscore?: boolean } = {}) {
+  const allowUnderscore = options.allowUnderscore !== false;
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(allowUnderscore ? /[^a-z0-9_-]+/g : /[^a-z0-9-]+/g, "-")
+    .replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "")
+    .slice(0, 63);
+}
+
 export type ProviderCatalog = {
   providers: ProviderCatalogItem[];
   source?: string;
@@ -334,6 +362,52 @@ export type AgentMoveOptions = {
   includeSecrets: boolean;
   startTarget: boolean;
   removeSource: boolean;
+};
+
+type TemplateRequirement = {
+  type: string;
+  key: string;
+  label: string;
+};
+
+type TemplateRequirements = {
+  envKeys?: string[];
+  oauthProviders?: string[];
+  capabilities?: {
+    codexCli?: boolean;
+    payments?: boolean;
+    sharedMemory?: boolean;
+    telegram?: boolean;
+  };
+};
+
+export type TemplateRequirementCheck = {
+  ok: boolean;
+  missing: TemplateRequirement[];
+};
+
+export type AgentTemplateLibraryItem = {
+  id: string;
+  name: string;
+  description: string;
+  sourceInstance: string;
+  sourceNodeId: string;
+  archive: {
+    file: string;
+    path: string;
+    size: number;
+  };
+  manifest: Record<string, any>;
+  requirements: TemplateRequirements;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AgentTemplateCaptureOptions = {
+  sourceNodeId?: string;
+  name: string;
+  description: string;
+  includeWorkspace: boolean;
 };
 
 export const EMPTY_GLOBAL_CONFIG: GlobalConfig = {

@@ -6,7 +6,6 @@ import { dashboardFallbackMessage, preferredGatewayUrl, surfaceStatusLabel } fro
 import type { GatewayResponse, Instance } from "../models/fleet.ts";
 import { Button } from "../components/ui/button.tsx";
 import { Alert } from "../components/ui/alert.tsx";
-import { Badge } from "../components/ui/badge.tsx";
 import { Card, CardContent } from "../components/ui/card.tsx";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../components/ui/empty.tsx";
 import { TabsList, TabsTrigger } from "../components/ui/tabs.tsx";
@@ -81,7 +80,12 @@ export function GatewayPanel({ selected, refresh }: { selected: Instance; refres
         <DashboardPanelHeader
           title="Gateway"
           subtitle={`Dashboard, remote desktop, and shell access for ${selected.name}.`}
-          actions={<Badge variant={isTerminal || frameUrl ? "success" : "warning"}>{isTerminal ? "Shell ready" : frameUrl ? "Endpoint ready" : "Unavailable"}</Badge>}
+          actions={
+            <span className={`fleet-status-cell ${isTerminal || frameUrl ? "good" : "warn"}`}>
+              <span className={`fleet-status-dot ${isTerminal || frameUrl ? "good" : "warn"}`} aria-hidden="true" />
+              {isTerminal ? "Shell ready" : frameUrl ? "Endpoint ready" : "Unavailable"}
+            </span>
+          }
         />
         <CardContent className="gateway-card-content">
           <div className="gateway-toolbar">

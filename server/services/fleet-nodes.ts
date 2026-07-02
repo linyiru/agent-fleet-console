@@ -18,6 +18,7 @@ import { readCronEntries } from "./crons.ts";
 import { cancelTelegramOnboarding, startTelegramOnboarding, telegramOnboardingStatus } from "./telegram-onboarding.ts";
 import { gatewayResponseForInstance } from "./gateway.ts";
 import { diagnoseGatewayEndpoints, isRemoteDashboardAuthError, normalizeRemoteGatewayEndpoints, normalizeRemoteInstanceEndpoints } from "./gateway-diagnostics.ts";
+import { codexCliAuthPayload } from "./oauth.ts";
 
 const LOCAL_NODE = {
   id: "local",
@@ -310,6 +311,17 @@ export async function proxyCreateInstance(nodeId: string, payload: any, requeste
   if (runtime === "nemoclaw") validators.validateNemoClawName(name);
   const dependencies = validators.normalizeCreateDependencies(payload?.dependencies || {});
   const capabilities = validators.normalizeCreateCapabilities(payload?.capabilities || {});
+  if (runtime === "nemoclaw" && capabilities.codexCli) {
+    throw badRequest("Codex CLI capability is only supported for Docker Hermes agents.");
+  }
+  if (runtime === "nemoclaw" && capabilities.sharedMemory) {
+    throw badRequest("Shared memory capability is only supported for Docker Hermes agents.");
+  }
+  if (nodeId === "local" && capabilities.codexCli && !await codexCliAuthPayload()) {
+    const error = new Error("Codex CLI capability requires a saved Codex device login in Fleet settings.") as Error & { status?: number };
+    error.status = 409;
+    throw error;
+  }
   const contextFiles = validators.normalizeCreateContextFiles(payload?.contextFiles || {});
   const telegram = validators.normalizeCreateTelegramSetup(payload?.telegram || {});
   const body = {

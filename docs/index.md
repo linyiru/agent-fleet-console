@@ -5,7 +5,9 @@ Fleet is a local-first control plane for Dockerized Hermes agents and trusted re
 ## Guide Map
 
 - [Getting started](getting-started.md): requirements, setup, first run, development mode, existing agents, and baseline checks.
-- [Operator guide](operator-guide.md): daily dashboard workflows, creating agents, provider sync, chat, gateway tools, web publishing, backups, Fleet nodes, Telegram, and NemoHermes.
+- [Operator guide](operator-guide.md): daily dashboard workflows, creating agents, provider sync, chat, gateway tools, web publishing, template library, backups, Fleet nodes, Telegram, and NemoHermes.
+- [Shared memory](shared-memory.md): private agent memory versus fleet shared memory, linking behavior, tools, operator controls, and troubleshooting.
+- [Template library](template-library.md): reusable Docker agent captures, storage, sanitization, requirements, deploy behavior, remote deploy, and troubleshooting.
 - [Configuration reference](configuration.md): environment loading, important variables, local storage, secrets, provider files, agent files, and deployment examples.
 - [API reference](api-reference.md): auth model, response conventions, local API endpoints, Fleet node proxy endpoints, and websocket terminal tickets.
 - [Codebase guide](codebase.md): frontend, backend, services, data, and release architecture.

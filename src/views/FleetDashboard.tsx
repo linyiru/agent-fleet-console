@@ -1,10 +1,9 @@
-import { ArrowDown, ArrowUp, Minus, Archive, BriefcaseBusiness, ChevronDown, ChevronRight, ChevronUp, CircleStop, Clock, CopyPlus, Download, Edit3, EllipsisVertical, ExternalLink, Globe2, HardDrive, MemoryStick, MoveRight, Network, Play, Plus, RotateCw, Search, Trash2, Wrench } from "lucide-react";
+import { ArrowDown, ArrowUp, Minus, Archive, BriefcaseBusiness, ChevronDown, ChevronRight, ChevronUp, CircleStop, Clock, CopyPlus, Download, Edit3, EllipsisVertical, ExternalLink, Globe2, HardDrive, Library, MemoryStick, MoveRight, Network, Play, Plus, RotateCw, Search, Trash2, Wrench } from "lucide-react";
 import { Fragment, useCallback, useEffect, useMemo, useState, type ComponentType } from "react";
-import type { AgentBackupOptions, AgentCloneOptions, AgentMoveOptions, AgentSyncTarget, BaselineStatus, FleetNode, GlobalConfig, Instance, Job, ProviderCatalog, ProviderConfig } from "../models/fleet.ts";
+import type { AgentBackupOptions, AgentCloneOptions, AgentMoveOptions, AgentSyncTarget, AgentTemplateCaptureOptions, BaselineStatus, FleetNode, GlobalConfig, Instance, Job, ProviderCatalog, ProviderConfig } from "../models/fleet.ts";
 import { classNames, isAgentReady, stateLabel, stateTone } from "../controllers/format.ts";
 import { FLEET_METRIC_HISTORY_KEY, appendFleetMetricSnapshot, buildFleetMetricSnapshot, fleetMetricSeries, sanitizeFleetMetricHistory, sparklineGeometry, trendDelta, type FleetMetricSnapshot } from "../controllers/fleet-metrics.ts";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../components/ui/alert-dialog.tsx";
-import { Badge } from "../components/ui/badge.tsx";
 import { Button } from "../components/ui/button.tsx";
 import { Checkbox } from "../components/ui/checkbox.tsx";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuTrigger } from "../components/ui/context-menu.tsx";
@@ -15,6 +14,7 @@ import { AgentBackupModal } from "./AgentBackupModal.tsx";
 import { AgentCloneModal } from "./AgentCloneModal.tsx";
 import { AgentMoveModal } from "./AgentMoveModal.tsx";
 import { AgentRenameModal } from "./AgentRenameModal.tsx";
+import { AgentTemplateCaptureModal } from "./AgentTemplateCaptureModal.tsx";
 import { OnboardingScreen } from "./OnboardingScreen.tsx";
 import { SettingsScreen } from "./SettingsModal.tsx";
 import { DashboardPageFrame, DashboardPageStack } from "../components/layout/FleetShell.tsx";
@@ -29,6 +29,7 @@ type Props = {
   onboardingOpen: boolean;
   openAdvanced: (name?: string, nodeId?: string) => void;
   backupAgent: (name: string, options: AgentBackupOptions, nodeId?: string) => Promise<void>;
+  captureAgentTemplate: (name: string, options: AgentTemplateCaptureOptions, nodeId?: string) => Promise<void>;
   cloneAgent: (name: string, options: AgentCloneOptions, nodeId?: string) => Promise<void>;
   moveAgent: (name: string, options: AgentMoveOptions, nodeId?: string) => Promise<void>;
   pendingActions: Record<string, string>;
@@ -52,8 +53,8 @@ function unit(value: number, singular: string, plural = `${singular}s`) {
   return `${value} ${value === 1 ? singular : plural}`;
 }
 
-function ratio(current: number, total: number, label: string) {
-  return `${current}/${total} ${label}`;
+function ratio(current: number, total: number) {
+  return `${current}/${total}`;
 }
 
 function fleetKey(name: string, nodeId?: string) {
@@ -200,10 +201,10 @@ export function FleetDashboard(props: Props) {
         hideHeader
       >
         <div className="fleet-stats-strip" aria-label="Fleet metrics">
-          <FleetMetric label="Agents ready" value={ratio(runningAgents, instances.length, instances.length === 1 ? "agent" : "agents")} detail={runningAgents >= instances.length ? "All running" : "Review stopped"} trend={runningAgents >= instances.length ? "steady" : "attention"} series={runningAgentSeries} seriesLabel={metricSeriesLabel("Running agents", runningAgentSeries)} />
+          <FleetMetric label="Agents ready" value={ratio(runningAgents, instances.length)} detail={runningAgents >= instances.length ? "All running" : unit(instances.length - runningAgents, "stopped agent")} trend={runningAgents >= instances.length ? "steady" : "attention"} series={runningAgentSeries} seriesLabel={metricSeriesLabel("Running agents", runningAgentSeries)} />
           <FleetMetric label="Service health" value={`${snapshot.serviceHealth}%`} detail={serviceCount ? `${runningServices}/${serviceCount} online` : "No services"} trend={serviceCount && runningServices < serviceCount ? "attention" : "steady"} series={serviceHealthSeries} seriesLabel={metricSeriesLabel("Service health", serviceHealthSeries, "%")} suffix="%" />
           <FleetMetric label="Active jobs" value={String(activeJobCount)} detail={activeJobCount ? "In progress" : "Quiet"} trend={activeJobCount ? "active" : "steady"} series={activeJobSeries} seriesLabel={metricSeriesLabel("Active jobs", activeJobSeries)} />
-          <FleetMetric label="Data health" value={`${snapshot.dataHealth}%`} detail="Memory, providers" trend={snapshot.dataHealth < 100 ? "attention" : "steady"} series={dataHealthSeries} seriesLabel={metricSeriesLabel("Data health", dataHealthSeries, "%")} suffix="%" />
+          <FleetMetric label="Data health" value={`${snapshot.dataHealth}%`} detail={snapshot.dataHealth < 100 ? "Check memory, providers" : "Memory, providers OK"} trend={snapshot.dataHealth < 100 ? "attention" : "steady"} series={dataHealthSeries} seriesLabel={metricSeriesLabel("Data health", dataHealthSeries, "%")} suffix="%" />
         </div>
         {degraded ? (
           <DegradedGuidanceStrip
@@ -217,6 +218,7 @@ export function FleetDashboard(props: Props) {
             jobs={activeJobs}
             instances={instances}
             onBackupAgent={props.backupAgent}
+            onCaptureTemplate={props.captureAgentTemplate}
             onCloneAgent={props.cloneAgent}
             onMoveAgent={props.moveAgent}
             onRunAction={props.runAgentAction}
@@ -349,7 +351,8 @@ const TREND_ICONS: Record<"up" | "down" | "flat", ComponentType<{ className?: st
 function FleetMetric({ label, value, detail, trend, series, seriesLabel, suffix }: { label: string; value: string; detail: string; trend: "steady" | "active" | "attention"; series: number[]; seriesLabel: string; suffix?: string }) {
   const delta = trendDelta(series, suffix);
   const geometry = sparklineGeometry(series);
-  const TrendIcon = delta ? TREND_ICONS[delta.direction] : null;
+  const movement = delta && delta.direction !== "flat" ? delta : null;
+  const TrendIcon = movement ? TREND_ICONS[movement.direction] : null;
   return (
     <div className={`fleet-stat-metric ${trend}`}>
       <div className="fleet-stat-copy">
@@ -357,10 +360,10 @@ function FleetMetric({ label, value, detail, trend, series, seriesLabel, suffix 
         <strong>{value}</strong>
         <div className="fleet-stat-meta">
           <small>{detail}</small>
-          {delta && TrendIcon ? (
-            <span className={`fleet-stat-delta ${delta.direction}`} title={`Trend: ${delta.direction} ${delta.delta}${suffix || ""}`}>
+          {movement && TrendIcon ? (
+            <span className="fleet-stat-delta" title={`Trend: ${movement.direction} ${movement.delta}${suffix || ""}`}>
               <TrendIcon className="size-3" />
-              {delta.delta}{suffix || ""}
+              {movement.delta}{suffix || ""}
             </span>
           ) : null}
         </div>
@@ -387,6 +390,7 @@ function DegradedGuidanceStrip({ instances, onOpen, onReviewSetup }: { instances
     <section className={classNames("fleet-guidance-strip", activityOnly && "active")} aria-label={activityOnly ? "Fleet activity" : "Fleet needs attention"}>
       <div className="fleet-guidance-copy">
         <span className="fleet-guidance-title">
+          {activityOnly ? null : <span className="fleet-status-dot warn" aria-hidden="true" />}
           {activityOnly
             ? `${activeAgents.length} agent${activeAgents.length === 1 ? " is" : "s are"} active`
             : attentionAgents.length ? `${attentionAgents.length} agent${attentionAgents.length === 1 ? "" : "s"} need attention` : "Some services need attention"}
@@ -411,7 +415,7 @@ function DegradedGuidanceStrip({ instances, onOpen, onReviewSetup }: { instances
         ) : null}
       </div>
       {activityOnly ? null : (
-        <Button variant="outline" type="button" onClick={onReviewSetup} className="shrink-0">
+        <Button variant="outline" size="sm" type="button" onClick={onReviewSetup} className="shrink-0">
           <Wrench data-icon="inline-start" />
           Review setup
         </Button>
@@ -519,11 +523,12 @@ function sortValue(instance: Instance, key: SortKey): string | number {
   }
 }
 
-function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAgent, onMoveAgent, onRenameAgent, onRunAction, onSelect, pendingActions, selectedName }: {
+function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCaptureTemplate, onCloneAgent, onMoveAgent, onRenameAgent, onRunAction, onSelect, pendingActions, selectedName }: {
   instances: Instance[];
   jobs: Job[];
   fleetNodes: FleetNode[];
   onBackupAgent: (name: string, options: AgentBackupOptions, nodeId?: string) => Promise<void>;
+  onCaptureTemplate: (name: string, options: AgentTemplateCaptureOptions, nodeId?: string) => Promise<void>;
   onCloneAgent: (name: string, options: AgentCloneOptions, nodeId?: string) => Promise<void>;
   onMoveAgent: (name: string, options: AgentMoveOptions, nodeId?: string) => Promise<void>;
   onRunAction: (name: string, action: string, nodeId?: string, confirmed?: boolean) => Promise<void>;
@@ -536,6 +541,7 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [confirmTarget, setConfirmTarget] = useState<{ instance: Instance; action: ConfirmableLifecycleAction } | null>(null);
   const [backupTarget, setBackupTarget] = useState<Instance | null>(null);
+  const [templateTarget, setTemplateTarget] = useState<Instance | null>(null);
   const [cloneTarget, setCloneTarget] = useState<Instance | null>(null);
   const [moveTarget, setMoveTarget] = useState<Instance | null>(null);
   const [renameTarget, setRenameTarget] = useState<Instance | null>(null);
@@ -667,7 +673,7 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
             <Search aria-hidden="true" />
             <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search agents" />
           </label>
-          <span>{visibleInstances.length}/{instances.length} shown</span>
+          <span>{normalizedQuery ? `${visibleInstances.length}/${instances.length} shown` : unit(instances.length, "agent")}</span>
         </div>
       ) : null}
       <Table className="fleet-agent-table">
@@ -730,9 +736,9 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="fleet-status-badge">
+                    <span className={`fleet-status-cell ${tone}`}>
                       <span className={`fleet-status-dot ${tone}`} aria-hidden="true" />
-                      <Badge variant={tone === "good" ? "success" : tone === "warn" ? "warning" : "secondary"}>{stateLabel(instance)}</Badge>
+                      {stateLabel(instance)}
                     </span>
                   </TableCell>
                   <TableCell className="fleet-provider-cell">
@@ -742,10 +748,10 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="fleet-service-meter"><strong>{instance.runningServices || 0}</strong><span>/</span>{instance.serviceCount || 0}</span>
+                    <span className={classNames("fleet-service-meter", (instance.runningServices || 0) < (instance.serviceCount || 0) && "warn")}><strong>{instance.runningServices || 0}</strong><span>/</span>{instance.serviceCount || 0}</span>
                   </TableCell>
-                  <TableCell className="fleet-hide-narrow">{instance.dependencies?.camofox ? <span className="fleet-metric-cell good"><Globe2 />Ready</span> : <span className="fleet-metric-cell muted"><Globe2 />Off</span>}</TableCell>
-                  <TableCell className="fleet-hide-narrow">{activeJob ? <span className="fleet-job-pill"><Clock />{activeJob.action} {Math.round(Number(activeJob.progress || 0))}%</span> : <span className="fleet-muted-copy">{selectedJobs.length} total</span>}</TableCell>
+                  <TableCell className="fleet-hide-narrow">{instance.dependencies?.camofox ? <span className="fleet-metric-cell"><Globe2 />Ready</span> : <span className="fleet-metric-cell muted"><Globe2 />Off</span>}</TableCell>
+                  <TableCell className="fleet-hide-narrow">{activeJob ? <span className="fleet-job-pill"><Clock />{activeJob.action} {Math.round(Number(activeJob.progress || 0))}%</span> : <span className="fleet-muted-copy">{selectedJobs.length ? `${selectedJobs.length} total` : "—"}</span>}</TableCell>
                   <TableCell className="fleet-manage-cell">
                     <Button variant="ghost" size="icon" type="button" aria-label={`${isExpanded ? "Collapse" : "Expand"} ${instance.name}`} onClick={(event) => { event.stopPropagation(); toggleExpanded(key); }}>
                       {isExpanded ? <ChevronDown /> : <ChevronRight />}
@@ -754,6 +760,7 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
                       instance={instance}
                       pendingAction={pendingAction}
                       onBackup={() => setBackupTarget(instance)}
+                      onTemplate={() => setTemplateTarget(instance)}
                       onClone={() => setCloneTarget(instance)}
                       onMove={() => setMoveTarget(instance)}
                       onRename={() => setRenameTarget(instance)}
@@ -772,6 +779,7 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
                     instance={instance}
                     pendingAction={pendingAction}
                     onBackup={() => setBackupTarget(instance)}
+                    onTemplate={() => setTemplateTarget(instance)}
                     onClone={() => setCloneTarget(instance)}
                     onMove={() => setMoveTarget(instance)}
                     onRename={() => setRenameTarget(instance)}
@@ -820,6 +828,7 @@ function FleetAgentTable({ instances, jobs, fleetNodes, onBackupAgent, onCloneAg
         </AlertDialogContent>
       </AlertDialog>
       {backupTarget ? <AgentBackupModal open selected={backupTarget} onClose={() => setBackupTarget(null)} onBackup={(name, options) => onBackupAgent(name, options, backupTarget.nodeId || "local")} /> : null}
+      {templateTarget ? <AgentTemplateCaptureModal open selected={templateTarget} onClose={() => setTemplateTarget(null)} onCapture={(name, options) => onCaptureTemplate(name, options, templateTarget.nodeId || "local")} /> : null}
       {cloneTarget ? <AgentCloneModal open selected={cloneTarget} onClose={() => setCloneTarget(null)} onClone={(name, options) => onCloneAgent(name, options, cloneTarget.nodeId || "local")} /> : null}
       {moveTarget ? <AgentMoveModal open selected={moveTarget} instances={instances} fleetNodes={fleetNodes} onClose={() => setMoveTarget(null)} onMove={(name, options) => onMoveAgent(name, options, moveTarget.nodeId || "local")} /> : null}
       {renameTarget ? <AgentRenameModal open selected={renameTarget} onClose={() => setRenameTarget(null)} onRename={onRenameAgent} /> : null}
@@ -858,11 +867,12 @@ function Initials({ value }: { value: string }) {
   return <i className="fleet-agent-initials" aria-hidden="true">{initials}</i>;
 }
 
-function AgentActionMenu({ instance, pendingAction, canOpenDetails, onBackup, onClone, onMove, onRename, onOpen, onRequestAction }: {
+function AgentActionMenu({ instance, pendingAction, canOpenDetails, onBackup, onTemplate, onClone, onMove, onRename, onOpen, onRequestAction }: {
   instance: Instance;
   pendingAction: string;
   canOpenDetails: boolean;
   onBackup: () => void;
+  onTemplate: () => void;
   onClone: () => void;
   onMove: () => void;
   onRename: () => void;
@@ -877,17 +887,18 @@ function AgentActionMenu({ instance, pendingAction, canOpenDetails, onBackup, on
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="agent-action-menu" onClick={(event) => event.stopPropagation()}>
-        <AgentMenuItems pendingAction={pendingAction} canOpenDetails={canOpenDetails} onBackup={onBackup} onClone={onClone} onMove={onMove} onRename={onRename} onOpen={onOpen} onRequestAction={onRequestAction} />
+        <AgentMenuItems instance={instance} pendingAction={pendingAction} canOpenDetails={canOpenDetails} onBackup={onBackup} onTemplate={onTemplate} onClone={onClone} onMove={onMove} onRename={onRename} onOpen={onOpen} onRequestAction={onRequestAction} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-function AgentContextMenuContent({ pendingAction, canOpenDetails, onBackup, onClone, onMove, onRename, onOpen, onRequestAction }: {
+function AgentContextMenuContent({ instance, pendingAction, canOpenDetails, onBackup, onTemplate, onClone, onMove, onRename, onOpen, onRequestAction }: {
   instance: Instance;
   pendingAction: string;
   canOpenDetails: boolean;
   onBackup: () => void;
+  onTemplate: () => void;
   onClone: () => void;
   onMove: () => void;
   onRename: () => void;
@@ -906,6 +917,7 @@ function AgentContextMenuContent({ pendingAction, canOpenDetails, onBackup, onCl
       <ContextMenuItem disabled={Boolean(pendingAction)} onSelect={() => onRequestAction("update")}><Download />Update</ContextMenuItem>
       <ContextMenuSeparator />
       <ContextMenuItem onSelect={onBackup}><Archive />Back up</ContextMenuItem>
+      <ContextMenuItem disabled={instance.nodeLocal === false || instance.runtime === "nemoclaw"} onSelect={onTemplate}><Library />Save as template</ContextMenuItem>
       <ContextMenuItem onSelect={onClone}><CopyPlus />Clone</ContextMenuItem>
       <ContextMenuItem onSelect={onMove}><MoveRight />Move</ContextMenuItem>
       <ContextMenuSeparator />
@@ -914,10 +926,12 @@ function AgentContextMenuContent({ pendingAction, canOpenDetails, onBackup, onCl
   );
 }
 
-function AgentMenuItems({ pendingAction, canOpenDetails, onBackup, onClone, onMove, onRename, onOpen, onRequestAction }: {
+function AgentMenuItems({ instance, pendingAction, canOpenDetails, onBackup, onTemplate, onClone, onMove, onRename, onOpen, onRequestAction }: {
+  instance: Instance;
   pendingAction: string;
   canOpenDetails: boolean;
   onBackup: () => void;
+  onTemplate: () => void;
   onClone: () => void;
   onMove: () => void;
   onRename: () => void;
@@ -936,6 +950,7 @@ function AgentMenuItems({ pendingAction, canOpenDetails, onBackup, onClone, onMo
       <DropdownMenuItem disabled={Boolean(pendingAction)} onSelect={() => onRequestAction("update")}><Download />Update</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onSelect={onBackup}><Archive />Back up</DropdownMenuItem>
+      <DropdownMenuItem disabled={instance.nodeLocal === false || instance.runtime === "nemoclaw"} onSelect={onTemplate}><Library />Save as template</DropdownMenuItem>
       <DropdownMenuItem onSelect={onClone}><CopyPlus />Clone</DropdownMenuItem>
       <DropdownMenuItem onSelect={onMove}><MoveRight />Move</DropdownMenuItem>
       <DropdownMenuSeparator />

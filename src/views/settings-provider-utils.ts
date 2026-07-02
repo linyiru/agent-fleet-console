@@ -64,13 +64,6 @@ export function providerUsesDeviceLogin(selected?: ProviderCatalogItem, provider
   return Boolean(selected?.authType === "oauth_device_code" || selected?.id === "openai-codex" || providerId === "openai-codex");
 }
 
-export function authLabel(selected?: ProviderCatalogItem, providerId = "") {
-  if (providerUsesDeviceLogin(selected, providerId)) return "Device login";
-  if (!selected) return "Unknown";
-  if (selected.authType === "none" || selected.authType === "api_key_optional") return "Optional";
-  return selected.credentialKeys.join(", ") || "API key";
-}
-
 export function providerOnboardingState(
   props: Pick<SettingsProvidersTabProps, "globalConfig" | "provider"> & { activeAgents: number },
   selected?: ProviderCatalogItem,

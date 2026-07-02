@@ -22,7 +22,7 @@ export function AuthPrompt() {
         <CardHeader>
           <div>
             <CardTitle>Console authentication</CardTitle>
-            <CardDescription>Enter the token configured in this console environment.</CardDescription>
+            <CardDescription>Enter the token configured in this console environment, or open the sign-in link the console prints at startup.</CardDescription>
           </div>
           <KeyRound />
         </CardHeader>

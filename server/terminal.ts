@@ -65,7 +65,7 @@ function terminalCommandArgs(composeArgs, name, cols, rows) {
     `export COLUMNS=${cols} LINES=${rows}`,
     `stty cols ${cols} rows ${rows} 2>/dev/null || true`,
     "cd /opt/data/workspace 2>/dev/null || cd /opt/data",
-    "export PATH=/opt/hermes/.venv/bin:$PATH",
+    "export PATH=/opt/data/bin:/opt/data/.npm-global/bin:/opt/hermes/.venv/bin:$PATH",
     "printf '\\033[1;36mHermes container shell\\033[0m  %s\\n' \"$HOSTNAME\"",
     "printf 'Home: %s  Workspace: %s\\n' \"$HERMES_HOME\" \"$PWD\"",
     "printf 'Try: hermes status, hermes update, hermes setup, hermes auth\\n\\n'",

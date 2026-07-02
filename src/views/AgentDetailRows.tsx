@@ -1,23 +1,35 @@
 import type { LucideIcon } from "lucide-react";
-import { Badge } from "../components/ui/badge.tsx";
 
-export type DetailBadgeVariant = "default" | "secondary" | "outline" | "success" | "warning";
+export type DetailRowTone = "success" | "warning" | "muted";
+
+const TONE_DOTS: Record<DetailRowTone, string> = {
+  success: "good",
+  warning: "warn",
+  muted: "muted",
+};
 
 export function DetailRow({
   icon: Icon,
   label,
   value,
-  badgeVariant,
+  tone,
 }: {
   icon: LucideIcon;
   label: string;
   value: string;
-  badgeVariant?: DetailBadgeVariant;
+  tone?: DetailRowTone;
 }) {
   return (
     <div className="details-row">
       <span className="detail-row-label"><Icon />{label}</span>
-      {badgeVariant ? <Badge variant={badgeVariant}>{value}</Badge> : <span className="details-row-value">{value}</span>}
+      {tone ? (
+        <span className={`detail-row-status ${tone}`}>
+          <span className={`fleet-status-dot ${TONE_DOTS[tone]}`} aria-hidden="true" />
+          {value}
+        </span>
+      ) : (
+        <span className="details-row-value">{value}</span>
+      )}
     </div>
   );
 }

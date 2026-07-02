@@ -16,6 +16,7 @@ vendor/hermes-agent/
 
 # OS/editor noise and logs
 .DS_Store
+.claude/
 *.log
 *.pid
 npm-debug.log*

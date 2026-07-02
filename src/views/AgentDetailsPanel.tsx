@@ -1,7 +1,6 @@
 import { Activity, Gauge, Globe2, Network, Server } from "lucide-react";
 import type { Instance } from "../models/fleet.ts";
 import { stateLabel, stateTone } from "../controllers/format.ts";
-import { Badge } from "../components/ui/badge.tsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.tsx";
 import { Separator } from "../components/ui/separator.tsx";
 import { DetailRow } from "./AgentDetailRows.tsx";
@@ -13,7 +12,7 @@ export function DetailsPanel({ selected }: { selected: Instance }) {
   const lanAddress = selected.network?.lanAddress || "127.0.0.1";
   const healthPort = selected.ports?.health || "n/a";
   const statusTone = stateTone(selected);
-  const statusVariant = statusTone === "good" ? "success" : statusTone === "warn" ? "warning" : "secondary";
+  const dashboardUrl = selected.endpoints?.lanDashboard || selected.endpoints?.dashboard || "";
 
   return (
     <div className="tab-content details-panel">
@@ -21,9 +20,12 @@ export function DetailsPanel({ selected }: { selected: Instance }) {
         <Card className="details-summary-card">
           <CardHeader>
             <Gauge />
-            <div><CardDescription>State</CardDescription><CardTitle>{stateLabel(selected)}</CardTitle></div>
+            <div>
+              <CardDescription>State</CardDescription>
+              <CardTitle><span className={`fleet-status-dot ${statusTone}`} aria-hidden="true" />{stateLabel(selected)}</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent><Badge variant={statusVariant}>{stateLabel(selected)}</Badge></CardContent>
+          <CardContent><span>{selected.nodeLabel || "Local Docker"}</span></CardContent>
         </Card>
         <Card className="details-summary-card">
           <CardHeader>
@@ -35,9 +37,18 @@ export function DetailsPanel({ selected }: { selected: Instance }) {
         <Card className="details-summary-card">
           <CardHeader>
             <Globe2 />
-            <div><CardDescription>Dashboard</CardDescription><CardTitle>{dashboardReachable ? "Reachable" : "Unknown"}</CardTitle></div>
+            <div>
+              <CardDescription>Dashboard</CardDescription>
+              <CardTitle><span className={`fleet-status-dot ${dashboardReachable ? "good" : "muted"}`} aria-hidden="true" />{dashboardReachable ? "Reachable" : "Unknown"}</CardTitle>
+            </div>
           </CardHeader>
-          <CardContent><Badge variant={dashboardReachable ? "success" : "secondary"}>{dashboardReachable ? "Online" : "No signal"}</Badge></CardContent>
+          <CardContent>
+            {dashboardReachable && dashboardUrl ? (
+              <a className="details-card-link" href={dashboardUrl} target="_blank" rel="noreferrer">{dashboardUrl.replace(/^https?:\/\//, "")}</a>
+            ) : (
+              <span>{dashboardReachable ? "Port not published" : "No signal"}</span>
+            )}
+          </CardContent>
         </Card>
       </div>
       <Card className="details-section-card">
@@ -51,11 +62,11 @@ export function DetailsPanel({ selected }: { selected: Instance }) {
           <Separator />
           <DetailRow icon={Network} label="LAN address" value={`${lanAddress}:${healthPort}`} />
           <Separator />
-          <DetailRow icon={Server} label="Runtime" value={selected.runtime === "nemoclaw" ? "NemoHermes" : "Docker Hermes"} badgeVariant={selected.runtime === "nemoclaw" ? "warning" : "secondary"} />
+          <DetailRow icon={Server} label="Runtime" value={selected.runtime === "nemoclaw" ? "NemoHermes" : "Docker Hermes"} />
           <Separator />
-          <DetailRow icon={Globe2} label="Dashboard" value={dashboardReachable ? "Reachable" : "Unknown"} badgeVariant={dashboardReachable ? "success" : "secondary"} />
+          <DetailRow icon={Globe2} label="Dashboard" value={dashboardReachable ? "Reachable" : "Unknown"} tone={dashboardReachable ? "success" : "muted"} />
           <Separator />
-          <DetailRow icon={Activity} label="Browser" value={selected.dependencies?.camofox ? "Enabled" : "Not installed"} badgeVariant={selected.dependencies?.camofox ? "success" : "secondary"} />
+          <DetailRow icon={Activity} label="Browser" value={selected.dependencies?.camofox ? "Enabled" : "Not installed"} tone={selected.dependencies?.camofox ? "success" : "muted"} />
         </CardContent>
       </Card>
     </div>
