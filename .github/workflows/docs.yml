@@ -1,11 +1,8 @@
 name: docs
 
-# Docs-as-code, convention over configuration: the repo adds ONE config file (kura.toml) + this
-# workflow. The Kura CLI reads kura.toml, and generates the whole site from the repo's docs/. Because
-# this repo is itself a Vite app (root package.json / tsconfig / index.html), we build Kura in an
-# ISOLATED ./site dir — the docs are copied in as content, so nothing at the repo root is touched.
-# Publishes a static site to gh-pages → https://<owner>.github.io/agent-fleet-console/
-# (In a real setup, the deps + this job collapse into a published `uses: kurajs/pages@v1`.)
+# Docs-as-code: the repo adds ONE config file (kura.toml) + this workflow. The kurajs/pages action
+# reads kura.toml, renders docs/ into a searchable, agent-native static site, and deploys it to
+# GitHub Pages -> https://<owner>.github.io/agent-fleet-console/
 
 on:
   push:
@@ -17,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # peaceiris pushes the built site to the gh-pages branch
+  contents: write
 
 concurrency:
   group: docs-pages
@@ -28,35 +25,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.14
-
-      # Build in an isolated ./site dir: the repo's docs/ become Kura's local content (index.md is the
-      # homepage). deps are the one thing the CLI can't install for itself; everything else it derives.
-      - name: Build the Kura docs site from kura.toml
-        run: |
-          mkdir -p site/content/docs
-          cp docs/*.md site/content/docs/
-          cp kura.toml site/
-          cat > site/package.json <<'JSON'
-          {
-            "name": "afc-docs", "private": true, "type": "module",
-            "scripts": { "build": "kura build --no-embed" },
-            "dependencies": { "@kurajs/docs": ">=0.0.45 <0.1.0", "react": "^19.2.0", "react-dom": "^19.2.0" },
-            "devDependencies": {
-              "@kurajs/cli": ">=0.0.26 <0.1.0", "@tailwindcss/node": "^4.3.1", "@tailwindcss/oxide": "^4.3.1",
-              "@tailwindcss/typography": "^0.5.20", "@types/react": "^19.2.0",
-              "tailwindcss": "^4.3.1", "typescript": "^5.9.0"
-            }
-          }
-          JSON
-          cd site && bun install && bun run build
-
-      - name: Publish to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site/dist/static
-          commit_message: "docs: publish Kura site (${{ github.sha }})"
+      - uses: kurajs/pages@v1
