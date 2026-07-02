@@ -1,0 +1,38 @@
+# Agent Fleet Console docs — the ONLY config. `kura build` reads this and generates the site.
+# The repo is a Vite app, so the workflow builds Kura in an isolated ./site dir (docs copied in as
+# content); nothing at the repo root is touched. Deployed to GitHub Pages by .github/workflows/docs.yml.
+
+markdown  = "commonmark"
+base_path = ""
+
+[site]
+name        = "Agent Fleet Console"
+description = "A local-first console for managing Docker-based coding agents."
+
+[deploy]
+target    = "github-pages"
+base_path = "/agent-fleet-console"
+
+# Docs are supplied as local content/docs/ by the workflow, so disable the auto ./docs mount.
+[content]
+sources = []
+
+[[nav.tabs]]
+title  = "Guides"
+groups = ["guides"]
+[[nav.tabs]]
+title  = "Reference"
+groups = ["reference"]
+[[nav.tabs]]
+title  = "Development"
+groups = ["development"]
+
+[nav.groups.guides]
+title = "Guides"
+pages = ["getting-started", "operator-guide", "configuration"]
+[nav.groups.reference]
+title = "Reference"
+pages = ["api-reference", "patterns", "template-library", "shared-memory"]
+[nav.groups.development]
+title = "Development"
+pages = ["codebase", "release-checklist"]
