@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="icon" href="/agent-fleet-console/favicon.svg" type="image/svg+xml"/><title>Operator Guide - Agent Fleet Console</title><meta name="description" content="A local-first console for managing Docker-based coding agents."/><meta property="og:title" content="Operator Guide"/><meta property="og:description" content="A local-first console for managing Docker-based coding agents."/><meta property="og:type" content="article"/><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.md"}},{"not":{"href_matches":"/*.json"}},{"not":{"href_matches":"/*.txt"}},{"not":{"href_matches":"/*.xml"}},{"not":{"href_matches":"/mcp"}}]},"eagerness":"moderate"}],"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.md"}},{"not":{"href_matches":"/*.json"}},{"not":{"href_matches":"/*.txt"}},{"not":{"href_matches":"/*.xml"}},{"not":{"href_matches":"/mcp"}}]},"eagerness":"moderate"}]}</script><script>(function(){if(HTMLScriptElement.supports&&HTMLScriptElement.supports('speculationrules'))return;var seen=new Set();document.addEventListener('pointerover',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var u=new URL(a.href,location.href);if(u.origin!==location.origin||seen.has(u.pathname)||u.pathname===location.pathname)return;if(/.(md|json)$/.test(u.pathname)||u.pathname==='/mcp')return;seen.add(u.pathname);var l=document.createElement('link');l.rel='prefetch';l.href=u.pathname+u.search;document.head.appendChild(l);},{passive:true});})();</script><style>
+          @view-transition { navigation: auto; }
+          ::view-transition-group(root),
+          ::view-transition-old(root),
+          ::view-transition-new(root) { animation-duration: 120ms; }
+          @media (prefers-reduced-motion: reduce) {
+            ::view-transition-group(*),
+            ::view-transition-old(*),
+            ::view-transition-new(*) { animation: none !important; }
+          }
+</style><link rel="stylesheet" href="/agent-fleet-console/_june/global.fa54b48b.css"/></head><body><script>(function(){try{var p=localStorage.getItem('kura-theme')||'system';var d=document.documentElement;d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',(p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme:dark)').matches))?'dark':'light');}catch(e){}})();</script><header class="sticky top-0 z-20 flex items-center gap-4 h-14 px-5 bg-topbar-bg backdrop-blur-sm border-b border-border max-md:px-4 max-md:gap-2.5"><a class="flex items-center gap-1.5 font-bold text-[1.05rem]" href="/agent-fleet-console/">Agent Fleet Console<!-- --> <span class="font-normal text-muted text-[.85rem]">Docs</span></a><form class="ml-auto max-md:ml-2 max-md:flex-1 max-md:min-w-0" action="/agent-fleet-console/search" method="get"><input class="w-[280px] max-w-[40vw] px-3 py-2 text-[.9rem] border border-border rounded-lg bg-surface-2 text-fg max-md:w-full max-md:max-w-none search-box" placeholder="Search docs…  (press /)" aria-label="Search" data-search-endpoint="/agent-fleet-console/search.json" data-doc-base="/agent-fleet-console/" data-search-static="1" name="q"/></form><nav class="flex items-center gap-4 text-muted text-[.9rem]"></nav></header><nav data-tabbar="true" class="sticky top-14 z-[15] h-11 bg-bg border-b border-border max-md:hidden"><div class="flex items-stretch gap-6 h-full max-w-[1280px] mx-auto px-5 overflow-x-auto no-scrollbar"><a data-tab-key="Guides" class="flex items-center text-[.9rem] border-b-2 border-transparent text-muted hover:text-fg [&amp;[aria-current=page]]:text-fg [&amp;[aria-current=page]]:border-accent" href="/agent-fleet-console/getting-started">Guides</a><a data-tab-key="Reference" class="flex items-center text-[.9rem] border-b-2 border-transparent text-muted hover:text-fg [&amp;[aria-current=page]]:text-fg [&amp;[aria-current=page]]:border-accent" href="/agent-fleet-console/api-reference">Reference</a><a data-tab-key="Development" class="flex items-center text-[.9rem] border-b-2 border-transparent text-muted hover:text-fg [&amp;[aria-current=page]]:text-fg [&amp;[aria-current=page]]:border-accent" href="/agent-fleet-console/codebase">Development</a></div></nav><button class="hidden max-md:flex items-center gap-2.5 w-full px-4 py-2.5 bg-bg border-0 border-b border-border text-fg-soft text-[.9rem] text-left cursor-pointer focus-visible:outline-none focus-visible:bg-hover" data-drawer-open="true" aria-controls="docs-nav" aria-expanded="false"><span class="text-[1.05rem] leading-none" aria-hidden="true">☰</span><span class="font-semibold text-fg flex-none">Navigation</span><span class="nav-bar-context text-muted flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" data-nav-context="true"></span></button><div class="drawer-backdrop" data-drawer-close="true" aria-hidden="true"></div><div class="grid grid-cols-[248px_minmax(0,1fr)_220px] max-lg:grid-cols-[248px_minmax(0,1fr)] max-md:grid-cols-1 items-start max-w-[1280px] mx-auto has-tabs"><aside class="sidebar sticky top-[100px] h-[calc(100vh-100px)] overflow-y-auto px-4 py-6 border-r border-border" id="docs-nav"><div data-tabbar="true" class="hidden max-md:flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-border"><a data-tab-key="Guides" class="px-3 py-1 border border-border rounded-full text-[.85rem] text-fg-soft [&amp;[aria-current=page]]:bg-accent-soft [&amp;[aria-current=page]]:text-accent [&amp;[aria-current=page]]:border-transparent" href="/agent-fleet-console/getting-started">Guides</a><a data-tab-key="Reference" class="px-3 py-1 border border-border rounded-full text-[.85rem] text-fg-soft [&amp;[aria-current=page]]:bg-accent-soft [&amp;[aria-current=page]]:text-accent [&amp;[aria-current=page]]:border-transparent" href="/agent-fleet-console/api-reference">Reference</a><a data-tab-key="Development" class="px-3 py-1 border border-border rounded-full text-[.85rem] text-fg-soft [&amp;[aria-current=page]]:bg-accent-soft [&amp;[aria-current=page]]:text-accent [&amp;[aria-current=page]]:border-transparent" href="/agent-fleet-console/codebase">Development</a></div><div data-tab="Guides"><div class="mb-5"><p class="mb-1.5 ml-2 text-sm font-semibold text-fg">Guides</p><ul class="flex flex-col gap-px"><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/getting-started">Getting Started</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/operator-guide">Operator Guide</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/configuration">Configuration Reference</a></li></ul></div></div><div data-tab="Reference" hidden=""><div class="mb-5"><p class="mb-1.5 ml-2 text-sm font-semibold text-fg">Reference</p><ul class="flex flex-col gap-px"><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/api-reference">API Reference</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/patterns">Implementation Patterns</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/template-library">Template Library</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/shared-memory">Shared Memory</a></li></ul></div></div><div data-tab="Development" hidden=""><div class="mb-5"><p class="mb-1.5 ml-2 text-sm font-semibold text-fg">Development</p><ul class="flex flex-col gap-px"><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/codebase">Codebase Guide</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/release-checklist">Release Checklist</a></li></ul></div></div></aside><div data-june-outlet=""><main class="w-auto max-w-none m-0 min-w-0 px-10 pt-8 pb-20 max-md:px-4 max-md:pt-5 max-md:pb-12"><details class="hidden max-lg:block mb-5 border border-border rounded-xl overflow-hidden"><summary class="chevron flex justify-between items-center cursor-pointer px-3.5 py-2.5 text-[.85rem] font-semibold text-fg-soft">On this page</summary><div class="flex flex-col px-3.5 pt-1 pb-2.5 border-t border-border"><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#dashboard">Dashboard</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#creating-agents">Creating Agents</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#agent-names">Agent Names</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#provider-defaults">Provider Defaults</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#codex-device-login">Codex Device Login</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#shared-credentials">Shared Credentials</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#syncing-agents">Syncing Agents</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#chat-and-sessions">Chat And Sessions</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#gateway">Gateway</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#terminal">Terminal</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#static-web-publishing">Static Web Publishing</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#lifecycle-jobs">Lifecycle Jobs</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#backups">Backups</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#template-library">Template Library</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#restore">Restore</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#clone">Clone</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#move">Move</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#fleet-nodes">Fleet Nodes</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#shared-memory">Shared Memory</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#nemohermes-agents">NemoHermes Agents</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#telegram-agents">Telegram Agents</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#payments-capability">Payments Capability</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#direct-wrapper-operations">Direct Wrapper Operations</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#troubleshooting">Troubleshooting</a></div></details><div class="flex items-center justify-between gap-4 mb-6"><div class="prose"><h1 class="!m-0">Operator Guide</h1></div><div class="relative inline-flex items-stretch flex-none"><button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[.85rem] border border-border border-r-0 rounded-l-lg bg-surface text-fg-soft cursor-pointer hover:bg-hover hover:text-fg" data-copy-md="/agent-fleet-console/operator-guide.md"><svg class="" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>Copy Markdown</button><details class="relative inline-flex items-stretch" data-menu="true"><summary class="chevron inline-flex items-center justify-center w-[30px] border border-border rounded-r-lg bg-surface text-muted cursor-pointer hover:bg-hover hover:text-fg" aria-label="More actions"></summary><div class="absolute right-0 top-[calc(100%+.4rem)] z-30 min-w-[17rem] flex flex-col gap-px p-1.5 bg-surface border border-border rounded-xl shadow-xl"><button class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" data-copy-md="/agent-fleet-console/operator-guide.md"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg><span class="flex flex-col min-w-0"><span class="font-semibold text-[.9rem] text-fg">Copy Markdown</span><span class="text-[.8rem] text-muted">Copy this page as Markdown for LLMs</span></span></button><a class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" href="/agent-fleet-console/operator-guide.md"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M16 21H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6l4 4v12a2 2 0 0 1-2 2z"></path><path d="M9 13h6M9 17h4"></path></svg><span class="flex flex-col min-w-0"><span class="inline-flex items-center gap-1 font-semibold text-[.9rem] text-fg">View as Markdown<!-- --> <svg class="text-muted" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></span><span class="text-[.8rem] text-muted">View this page as plain text</span></span></a><a class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" href="https://chatgpt.com/?q=Please%20read%20this%20doc%20and%20answer%20my%20questions%3A%20Operator%20Guide" target="_blank" rel="noreferrer"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"></path></svg><span class="flex flex-col min-w-0"><span class="inline-flex items-center gap-1 font-semibold text-[.9rem] text-fg">Open in ChatGPT<!-- --> <svg class="text-muted" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></span><span class="text-[.8rem] text-muted">Ask ChatGPT about this page</span></span></a><a class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" href="https://claude.ai/new?q=Please%20read%20this%20doc%20and%20answer%20my%20questions%3A%20Operator%20Guide" target="_blank" rel="noreferrer"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"></path></svg><span class="flex flex-col min-w-0"><span class="inline-flex items-center gap-1 font-semibold text-[.9rem] text-fg">Open in Claude<!-- --> <svg class="text-muted" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></span><span class="text-[.8rem] text-muted">Ask Claude about this page</span></span></a></div></details></div></div><article class="prose"><p>This guide covers the workflows Fleet supports after setup is complete.</p>
+<h2 id="dashboard">Dashboard</h2>
+<p>The dashboard is the primary operator surface. It combines local and remote Fleet node data into one view and shows:</p>
+<ul>
+<li>agent name and display name</li>
+<li>host or node label</li>
+<li>runtime</li>
+<li>state and pending job state</li>
+<li>service count and running service count</li>
+<li>memory readiness</li>
+<li>provider and capability summaries</li>
+<li>endpoint availability</li>
+<li>update and drift status</li>
+</ul>
+<p>Use row actions for common lifecycle work. Open an agent detail view when you need chat, gateway access, credentials, terminal, crons, jobs, or diagnostics.</p>
+<h2 id="creating-agents">Creating Agents</h2>
+<p>Click <strong>New agent</strong> from the dashboard. Choose:</p>
+<ul>
+<li>target node: local or an enabled remote Fleet node</li>
+<li>runtime: Docker Hermes or NemoHermes sandbox</li>
+<li>agent name</li>
+<li>Camofox browser sidecar for Docker agents</li>
+<li>Codex CLI for Docker agents with a saved Codex device login</li>
+<li>Fleet shared memory for Docker agents</li>
+<li>optional Telegram setup</li>
+<li>optional capabilities, such as payments when enabled by the app surface</li>
+</ul>
+<p>Create jobs run asynchronously. The dashboard and jobs panel show progress while Docker images, compose files, provider config, credentials, ports, and sidecars are prepared.</p>
+<p>New agents inherit fleet-wide provider defaults and shared credentials at creation time.</p>
+<p>If <strong>Codex CLI</strong> is selected, Fleet installs <code>@openai/codex</code> into the agent's persistent home and writes the CLI auth file from the same Codex device login used by the OpenAI Codex provider. Complete <strong>Settings -&gt; Model &amp; auth -&gt; Codex device login</strong> before selecting this for a local Docker agent. Remote nodes use the target node's saved Codex login.</p>
+<h2 id="agent-names">Agent Names</h2>
+<p>Docker Hermes agents allow:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>lowercase letters, numbers, hyphens, and underscores</span></span></code></pre>
+<p>NemoHermes sandbox agents allow:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>lowercase letters, numbers, and hyphens</span></span></code></pre>
+<p>Names can be up to 63 characters and must start and end with a lowercase letter or number.</p>
+<h2 id="provider-defaults">Provider Defaults</h2>
+<p>Open <strong>Fleet settings -&gt; Model &amp; auth</strong> to configure the default provider for new and synced agents.</p>
+<p>Bundled provider choices:</p>
+<ul>
+<li>OpenAI Codex</li>
+<li>Ollama</li>
+<li>Custom endpoint</li>
+<li>OpenRouter</li>
+</ul>
+<p>The default provider is saved to:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>secrets/global-provider.json</span></span></code></pre>
+<p>When a provider config is applied to an agent, it updates:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>&#x3C;agent>/home/config.yaml</span></span></code></pre>
+<p>For local model providers such as Ollama, Fleet normalizes host-machine URLs for container use when needed. For example, a local host URL can be converted so the agent container can reach it.</p>
+<h2 id="codex-device-login">Codex Device Login</h2>
+<p>For OpenAI Codex provider auth, start device login from <strong>Fleet settings -&gt; Model &amp; auth</strong>. Fleet stores the resulting auth state under:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>secrets/global-oauth/</span></span></code></pre>
+<p>This does not automatically mutate every existing agent. Use <strong>Sync agents</strong> or select specific agents to copy the auth state into their Hermes credential pools. Agents created with the Codex CLI capability also receive an updated <code>.codex/auth.json</code> from the same saved login.</p>
+<p>After sync, running agents are restarted so they reload the updated provider and auth state.</p>
+<h2 id="shared-credentials">Shared Credentials</h2>
+<p>Open <strong>Fleet settings -&gt; Credentials</strong> to store API keys or other provider env values. Fleet validates key names and rejects dangerous runtime keys.</p>
+<p>Credentials are saved to:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>secrets/global-credentials.env</span></span></code></pre>
+<p>Agent sync copies them into:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>&#x3C;agent>/home/.env</span></span></code></pre>
+<p>The UI and API return redacted summaries, not raw secret values.</p>
+<p>Use shared credentials for values that should be inherited by many agents. Use per-agent credentials when one agent needs a different key, account, or endpoint.</p>
+<h2 id="syncing-agents">Syncing Agents</h2>
+<p>Sync copies current fleet-wide provider defaults, shared credentials, and applicable auth material into selected agents.</p>
+<p>Use sync after:</p>
+<ul>
+<li>changing the default model provider</li>
+<li>adding or removing API keys</li>
+<li>completing Codex device login</li>
+<li>importing global config from a backup bundle</li>
+</ul>
+<p>Running agents are restarted by sync so containers reload environment values.</p>
+<h2 id="chat-and-sessions">Chat And Sessions</h2>
+<p>Open an agent detail view and use the chat panel to:</p>
+<ul>
+<li>list sessions</li>
+<li>read session messages</li>
+<li>send a new chat turn</li>
+<li>continue an existing session</li>
+<li>stop a running chat turn when supported</li>
+</ul>
+<p>Fleet routes chat through the selected node. Remote agents use the remote Fleet node API, so the coordinator does not need direct access to the remote agent container.</p>
+<p><code>HERMES_CONSOLE_MAX_CHAT_MESSAGE_CHARS</code> controls the maximum inbound chat message size accepted by the API.</p>
+<h2 id="gateway">Gateway</h2>
+<p>The gateway panel exposes operator entry points for an agent:</p>
+<ul>
+<li>Hermes dashboard</li>
+<li>Camofox VNC</li>
+<li>static web preview</li>
+<li>terminal</li>
+<li>chat history</li>
+</ul>
+<p>Fleet also reports gateway diagnostics, including advertised URL, effective URL, reachability, HTTP status, reason, and checked time.</p>
+<p>Terminal access uses short-lived, single-use tickets issued by the API. When console auth is enabled, websocket upgrades still require the console token.</p>
+<h2 id="terminal">Terminal</h2>
+<p>The in-app terminal opens a shell into the agent container using a websocket ticket. For local terminal escape hatches outside the UI:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> shell</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> hermes</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF"> --help</span></span></code></pre>
+<p>Use terminal access as an administrator capability. It can read or modify agent workspace and runtime files.</p>
+<h2 id="static-web-publishing">Static Web Publishing</h2>
+<p>Each Docker agent gets a Node.js webhost sidecar. To publish a simple page, write static files to:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>&#x3C;agent>/workspace/web/</span></span></code></pre>
+<p>Inside the agent container, that path is:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>/opt/data/workspace/web</span></span></code></pre>
+<p>Use <code>index.html</code> as the default page and relative paths for assets. Fleet writes current URLs and instructions to:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>&#x3C;agent>/workspace/HERMES_WEB.md</span></span></code></pre>
+<p>The agent environment includes:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>HERMES_WEB_ROOT</span></span>
+<span class="line"><span>HERMES_WEB_URL</span></span>
+<span class="line"><span>HERMES_WEB_LAN_URL</span></span></code></pre>
+<p>The Web tab in the gateway panel opens the LAN URL.</p>
+<h2 id="lifecycle-jobs">Lifecycle Jobs</h2>
+<p>Fleet queues longer operations as jobs:</p>
+<ul>
+<li>create</li>
+<li>start</li>
+<li>stop</li>
+<li>restart</li>
+<li>update</li>
+<li>delete</li>
+<li>clone</li>
+<li>backup export</li>
+<li>backup restore</li>
+<li>global config sync</li>
+<li>session chat fallback jobs</li>
+<li>Telegram setup</li>
+</ul>
+<p>Jobs have status, progress, output, error text, timestamps, and optional node metadata. The API exposes recent jobs and individual job status.</p>
+<p>Risky actions require confirmation from the UI or API payload. Start is the only lifecycle action that does not require risk confirmation.</p>
+<h2 id="backups">Backups</h2>
+<p>Open <strong>Fleet settings -&gt; Backups</strong> or the agent lifecycle panel.</p>
+<p>Backup archives are written to:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>data/backups/</span></span></code></pre>
+<p>By default, backups include:</p>
+<ul>
+<li>selected agent config</li>
+<li><code>SOUL.md</code></li>
+<li>selected workspace files</li>
+<li>provider defaults</li>
+<li>manifest metadata</li>
+</ul>
+<p>By default, backups exclude:</p>
+<ul>
+<li><code>home/.env</code></li>
+<li>global credentials</li>
+<li>OAuth state</li>
+<li>token-like files</li>
+<li>generated runtime secrets</li>
+<li>local database files</li>
+</ul>
+<p>Only include secrets when moving trusted local state between machines and you understand the archive handling risk.</p>
+<h2 id="template-library">Template Library</h2>
+<p>Open <strong>Fleet settings -&gt; Templates</strong> to save and redeploy reusable Docker agent templates.</p>
+<p>A template is a single-agent, secret-free capture. It is useful when an agent has the right <code>SOUL.md</code>, workspace context, installed skills, browser/runtime shape, Codex CLI setup marker, or shared-memory capability, and you want to redeploy that baseline multiple times.</p>
+<p>Template archives are written to:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>data/template-library/</span></span></code></pre>
+<p>Template capture always excludes secret values:</p>
+<ul>
+<li><code>home/.env</code></li>
+<li>Codex CLI auth such as <code>home/.codex/auth.json</code></li>
+<li>token-like, credential-like, key, and PEM files</li>
+<li>known auth directories such as <code>.ssh</code>, <code>.aws</code>, <code>.gcloud</code>, and <code>.codex</code></li>
+<li>generated workspace folders such as <code>node_modules</code>, <code>.git</code>, <code>dist</code>, and <code>build</code></li>
+<li>managed Fleet shared-memory bearer-token config</li>
+</ul>
+<p>Fleet stores required secret names only. Before deploy, Fleet checks whether the target node has the required global credentials or Codex device login. Missing requirements block deploy with <code>409</code> unless the operator explicitly chooses to deploy anyway.</p>
+<p>Deploying a template creates a fresh Docker Hermes agent with a new name, fresh ports, and fresh runtime identity. The sanitized home/workspace state is restored, then target-side auth and capabilities are rehydrated from that target Fleet node. Codex CLI uses the target node's saved Codex device login, and shared memory links to the target node's shared-memory hub.</p>
+<p>You can also choose <strong>From template</strong> in the New agent modal. See <a href="/agent-fleet-console/template-library">Template library</a> for the full storage, sanitization, requirement-check, and remote-deploy model.</p>
+<h2 id="restore">Restore</h2>
+<p>Restore accepts a local <code>.tar.gz</code> path on the console host. Fleet inspects archives before restore and rejects unsafe tar entries such as absolute paths, parent traversal, symlinks, and hardlinks.</p>
+<p>Restored agents receive fresh generated ports and runtime secrets. Source <code>compose.yaml</code> and <code>instance.env</code> are not reused directly.</p>
+<p>If an archive contains names that already exist, restore with a prefix.</p>
+<h2 id="clone">Clone</h2>
+<p>Clone duplicates an existing local agent into a new name. Clone can copy workspace files and, because it stays local, can optionally copy per-agent credentials.</p>
+<p>Use clone when you want a known-good agent shape with fresh ports and independent runtime identity.</p>
+<h2 id="move">Move</h2>
+<p>Move transfers a Docker Hermes agent from one Fleet node to another. Fleet exports a single-agent backup on the source node, streams it through the coordinator, imports it on the target node, restores it with fresh ports and runtime secrets, verifies that the target agent exists, then optionally removes the source.</p>
+<p>Source removal is opt-in. Leave it off when you want a safe copy first, or enable it when you want Fleet to delete the original after target verification.</p>
+<p>Secrets remain opt-in. If secrets are not included, sync credentials or configure per-agent credentials on the target after the move.</p>
+<p>NemoHermes agents are not moved by the current restore workflow. Recreate those agents on the target node or use a manual runtime-specific process.</p>
+<h2 id="fleet-nodes">Fleet Nodes</h2>
+<p>Open <strong>Fleet settings -&gt; Fleet nodes</strong> to add another Fleet console.</p>
+<p>Each node has:</p>
+<ul>
+<li>label</li>
+<li>base URL</li>
+<li>enabled state</li>
+<li>optional bearer token</li>
+<li>health/test status</li>
+<li>console version and revision metadata when reachable</li>
+</ul>
+<p>When a remote node is enabled, the dashboard includes its agents. Most row and detail actions are routed through the remote node API:</p>
+<ul>
+<li>create</li>
+<li>lifecycle actions</li>
+<li>display name updates</li>
+<li>clone</li>
+<li>backup export and download</li>
+<li>gateway</li>
+<li>chat and sessions</li>
+<li>terminal ticket creation</li>
+<li>crons</li>
+<li>credentials summary</li>
+<li>payment policy reads</li>
+<li>console self-update status when allowed</li>
+</ul>
+<p>Remote node tokens are stored in the local SQLite database and redacted in responses. Use Fleet nodes only on trusted networks.</p>
+<h2 id="shared-memory">Shared Memory</h2>
+<p>Open <strong>Fleet settings -&gt; Shared memory</strong> to give linked agents access to one fleet-wide Mnemosyne store.</p>
+<p>For new Docker Hermes agents, you can also select <strong>Shared memory</strong> in the New agent modal. Fleet starts the hub if needed, creates the agent, installs the shared-memory skill, and links the agent before the create job completes.</p>
+<p>Shared memory is separate from each agent's private memory:</p>
+<ul>
+<li>private memory stays inside one agent and uses normal Mnemosyne tools such as <code>mnemosyne_recall</code></li>
+<li>shared memory is hosted by the Fleet shared-memory hub and uses only <code>fleet_shared_memory_*</code> tools</li>
+</ul>
+<p>Use shared memory for durable facts that multiple linked agents should know: operator preferences, workflow ownership, cross-agent handoffs, stable identities, and corrections. Do not store secrets, credentials, raw conversation logs, speculation, or one-off context that belongs to one agent.</p>
+<p>The Shared memory tab can:</p>
+<ul>
+<li>start and stop the hub</li>
+<li>link or unlink local agents</li>
+<li>browse and search shared entries</li>
+<li>add entries as <code>console</code></li>
+<li>delete stale or wrong entries</li>
+</ul>
+<p>When you link or unlink a running agent, Fleet restarts that agent so the MCP tools and <code>fleet-shared-memory</code> skill load immediately. Stopped agents keep their state and load the change next time they start.</p>
+<p>If an agent appears to use local memory when you expected shared memory, check the agent log. The <code>fleet-shared-memory</code> MCP server should register only four shared tools. Hermes may prefix them as <code>mcp_fleet_shared_memory_...</code>, but the underlying names should be:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>fleet_shared_memory_remember</span></span>
+<span class="line"><span>fleet_shared_memory_recall</span></span>
+<span class="line"><span>fleet_shared_memory_forget</span></span>
+<span class="line"><span>fleet_shared_memory_stats</span></span></code></pre>
+<p>If it registers private-looking tools such as <code>mnemosyne_recall</code>, or local Mnemosyne shared tools such as <code>mnemosyne_shared_recall</code>, restart the shared-memory hub and relink the agent. See <a href="/agent-fleet-console/shared-memory">Shared memory</a> for the full memory model and troubleshooting steps.</p>
+<h2 id="nemohermes-agents">NemoHermes Agents</h2>
+<p>NemoHermes sandbox agents use the <code>nemohermes</code> runner on the target machine. Relevant environment values:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-env"><span class="line"><span>NEMOHERMES_BIN=nemohermes</span></span>
+<span class="line"><span>NEMOHERMES_AUTO_INSTALL=1</span></span>
+<span class="line"><span>NEMOHERMES_INSTALL_COMMAND=curl -fsSL https://www.nvidia.com/nemoclaw.sh | bash</span></span>
+<span class="line"><span>NEMOHERMES_INSTALL_TIMEOUT_MS=300000</span></span></code></pre>
+<p>If the runner is missing and auto-install is enabled, the create job tries the install command once. On locked-down hosts, set:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-env"><span class="line"><span>NEMOHERMES_AUTO_INSTALL=0</span></span></code></pre>
+<p>Then install the runner manually or set <code>NEMOHERMES_BIN</code> to an absolute path.</p>
+<p>The create modal can switch the fleet provider to an Ollama-compatible default when the NemoHermes runtime requires local model access.</p>
+<h2 id="telegram-agents">Telegram Agents</h2>
+<p>Telegram setup can be started during agent creation or later from the agent integration flow.</p>
+<p>The onboarding flow creates a pairing session, displays a QR/deep link, polls for readiness, then stores:</p>
+<ul>
+<li>bot token</li>
+<li>bot username</li>
+<li>trusted user ID</li>
+<li>allowed user IDs</li>
+<li>home channel</li>
+</ul>
+<p>Telegram credentials are written into the target agent configuration through an asynchronous setup job.</p>
+<h2 id="payments-capability">Payments Capability</h2>
+<p>Fleet can surface payment capability metadata for agents that have the configured payments skill and client path:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>official/payments/mpp-agent</span></span>
+<span class="line"><span>mppx</span></span>
+<span class="line"><span>hermes-payments</span></span></code></pre>
+<p>Payment policy reads and writes are scoped per agent. Treat payment configuration as high-risk operational state and keep credential files private.</p>
+<h2 id="direct-wrapper-operations">Direct Wrapper Operations</h2>
+<p>Use wrappers when the UI is unavailable or you need direct local Docker access:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> status</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> logs</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> shell</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> restart</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> memory-status</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> memory-repair</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> browser-save</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span></code></pre>
+<p><code>bin/hermes-console</code> loads the standard Fleet env files and starts the console with the configured host and port.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>Run setup checks:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">npm</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> init:baseline</span></span></code></pre>
+<p>Check local Docker state:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">bin/hermes-docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> status</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72"> &#x3C;</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">agen</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">t</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72">></span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> compose</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> version</span></span>
+<span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">docker</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> ps</span></span></code></pre>
+<p>Check jobs from the UI or API:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>GET /api/jobs</span></span>
+<span class="line"><span>GET /api/jobs/:id</span></span></code></pre>
+<p>Common fixes:</p>
+<ul>
+<li>Restart Docker when compose commands hang or fail.</li>
+<li>Re-run <code>npm run setup</code> after moving the repository.</li>
+<li>Confirm <code>HERMES_AGENT_SRC</code> points to a valid checkout before creating or updating Docker agents.</li>
+<li>Set <code>HERMES_CONSOLE_TOKEN</code> before binding outside localhost.</li>
+<li>Sync agents after changing provider defaults or shared credentials.</li>
+<li>Restart an agent after manual edits to <code>home/.env</code> or <code>home/config.yaml</code>.</li>
+</ul>
+</article><nav class="flex justify-between gap-4 mt-12 pt-6 border-t border-border"><a class="flex-1 px-4 py-3.5 border border-border rounded-xl hover:border-accent" href="/agent-fleet-console/getting-started"><div class="text-muted text-[.78rem]">← <!-- -->Previous</div><div class="font-semibold text-accent">Getting Started</div></a><a class="flex-1 px-4 py-3.5 border border-border rounded-xl hover:border-accent text-right" href="/agent-fleet-console/configuration"><div class="text-muted text-[.78rem]">Next<!-- --> →</div><div class="font-semibold text-accent">Configuration Reference</div></a></nav><script>document.querySelectorAll('[data-copy-md]').forEach(function(b){b.addEventListener('click',async function(){try{var r=await fetch(b.getAttribute('data-copy-md'));var t=await r.text();await navigator.clipboard.writeText(t);var o=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=o;},1500);}catch(e){alert('Copy failed: '+e);}});});document.querySelectorAll('.prose pre').forEach(function(pre){if(pre.querySelector('.copy-code'))return;var b=document.createElement('button');b.className='copy-code';b.textContent='Copy';b.addEventListener('click',async function(){var c=pre.querySelector('code');try{await navigator.clipboard.writeText(c?c.innerText:pre.innerText);var o=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=o;},1200);}catch(e){}});pre.appendChild(b);});document.querySelectorAll('.tabs').forEach(function(t){t.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){var i=b.getAttribute('data-tab');t.querySelectorAll('.tab-btn').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-tab')===i);});t.querySelectorAll('.tab-panel').forEach(function(p){p.hidden=p.getAttribute('data-tab')!==i;});});});});(function(){var blocks=document.querySelectorAll('code.language-mermaid');if(!blocks.length)return;var items=[];blocks.forEach(function(c){var pre=c.closest('pre')||c;var h=document.createElement('div');h.className='mermaid-diagram';pre.replaceWith(h);items.push({src:c.textContent,holder:h});});var lib,id=0;function load(){return lib||(lib=import("https://esm.sh/mermaid@11").then(function(m){return m.default;}));}function theme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default';}function run(){load().then(function(mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:theme()});items.forEach(function(it){mermaid.render('kura-mmd-'+(id++),it.src).then(function(r){it.holder.innerHTML=r.svg;}).catch(function(e){it.holder.innerHTML='<pre class="mermaid-error">'+String((e&&e.message)||e)+'</pre>';});});}).catch(function(){});}run();var cur=document.documentElement.getAttribute('data-theme');new MutationObserver(function(){var t=document.documentElement.getAttribute('data-theme');if(t!==cur){cur=t;run();}}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});})();</script></main><aside class="sticky top-14 max-h-[calc(100vh-56px)] overflow-y-auto px-4 py-8 max-lg:hidden"><p class="text-[.72rem] font-bold tracking-wider uppercase text-muted mb-2.5">On this page</p><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#dashboard">Dashboard</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#creating-agents">Creating Agents</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#agent-names">Agent Names</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#provider-defaults">Provider Defaults</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#codex-device-login">Codex Device Login</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#shared-credentials">Shared Credentials</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#syncing-agents">Syncing Agents</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#chat-and-sessions">Chat And Sessions</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#gateway">Gateway</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#terminal">Terminal</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#static-web-publishing">Static Web Publishing</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#lifecycle-jobs">Lifecycle Jobs</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#backups">Backups</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#template-library">Template Library</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#restore">Restore</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#clone">Clone</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#move">Move</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#fleet-nodes">Fleet Nodes</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#shared-memory">Shared Memory</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#nemohermes-agents">NemoHermes Agents</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#telegram-agents">Telegram Agents</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#payments-capability">Payments Capability</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#direct-wrapper-operations">Direct Wrapper Operations</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#troubleshooting">Troubleshooting</a></aside></div></div><footer class="border-t border-border mt-8"><div class="flex items-center justify-between flex-wrap gap-4 max-w-[1280px] mx-auto px-6 py-5 max-md:px-4"><nav class="flex items-center gap-[1.1rem] text-[.85rem]"><a class="text-muted hover:text-fg" href="/agent-fleet-console/llms.txt">llms.txt</a><button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] p-0 text-[.95rem] leading-none border border-border rounded-lg bg-surface text-fg cursor-pointer hover:bg-hover" data-theme-toggle="true" aria-label="Toggle theme"></button></nav><a class="text-muted text-[.85rem] hover:text-accent" href="https://kura.build/" target="_blank" rel="noreferrer">Powered by Kura</a></div></footer><script>document.addEventListener('keydown',function(e){if(e.key==='/' && !document.documentElement.dataset.ctrlk && !/INPUT|TEXTAREA/.test((document.activeElement||{}).tagName||'')){e.preventDefault();var s=document.querySelector('.search-box');if(s)s.focus();}});(function(){var b=document.querySelector('[data-theme-toggle]');if(!b)return;var d=document.documentElement,order=['system','light','dark'],icon={system:'🖥',light:'☀',dark:'☾'};function pref(){return d.getAttribute('data-theme-pref')||'system';}function res(p){return p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}function set(p){d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',res(p));try{localStorage.setItem('kura-theme',p);}catch(e){}b.textContent=icon[p];b.setAttribute('title','Theme: '+p);}set(pref());b.addEventListener('click',function(){set(order[(order.indexOf(pref())+1)%order.length]);});try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){if(pref()==='system')d.setAttribute('data-theme',res('system'));});}catch(e){}})();document.addEventListener('click',function(e){var t=e.target;document.querySelectorAll('details[data-menu][open]').forEach(function(d){if(!d.contains(t))d.removeAttribute('open');});var it=t.closest&&t.closest('details[data-menu] a, details[data-menu] [data-copy-md]');if(it){var dd=it.closest('details[data-menu]');if(dd)setTimeout(function(){dd.removeAttribute('open');},0);}});document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details[data-menu][open]').forEach(function(d){d.removeAttribute('open');});});(function(){var root=document.documentElement;function opener(){return document.querySelector('[data-drawer-open]');}function items(){var d=document.getElementById('docs-nav');if(!d)return[];return[].filter.call(d.querySelectorAll('a[href],button:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'),function(el){return el.offsetParent!==null;});}function set(o){var was=root.classList.contains('drawer-open');root.classList.toggle('drawer-open',o);var b=opener();if(b)b.setAttribute('aria-expanded',o?'true':'false');if(o){var f=items();if(f[0])f[0].focus();}else if(was&&b)b.focus();}document.addEventListener('click',function(e){if(e.target.closest('[data-drawer-open]')){e.preventDefault();set(!root.classList.contains('drawer-open'));return;}if(e.target.closest('[data-drawer-close]')){set(false);return;}if(e.target.closest('#docs-nav a'))set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'){set(false);return;}if(e.key==='Tab'&&root.classList.contains('drawer-open')){var f=items();if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}else if(f.indexOf(document.activeElement)<0){e.preventDefault();first.focus();}}});})();(function(){
+  function trim(p){return p.length>1&&p.endsWith('/')?p.slice(0,-1):p;}
+  function sync(){
+    var path=trim(location.pathname), tab=null;
+    var links=document.querySelectorAll('.sidebar a[href],[data-tabbar] a[href]');
+    for(var i=0;i<links.length;i++){var a=links[i],on=trim(a.getAttribute('href'))===path;
+      if(on){a.setAttribute('aria-current','page');var g=a.closest('[data-tab]');if(g)tab=g.getAttribute('data-tab');}
+      else a.removeAttribute('aria-current');}
+    if(tab!=null){
+      document.querySelectorAll('[data-tab]').forEach(function(g){g.hidden=g.getAttribute('data-tab')!==tab;});
+      document.querySelectorAll('[data-tabbar] a').forEach(function(a){
+        if(a.getAttribute('data-tab-key')===tab)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+    }
+    // expand the folder(s) holding the active page. Iterate EVERY aria-current sidebar link, not
+    // just the first: a folder-as-page link lives in a <details>, but the mobile tab-bar link (also
+    // in .sidebar, earlier in the DOM) has no folder ancestor — querySelector would pick that one
+    // and expand nothing. forEach opens each link's folder chain; tab links are harmless no-ops.
+    document.querySelectorAll('.sidebar a[aria-current="page"]').forEach(function(cur){
+      var d=cur.closest('details.folder');while(d){d.open=true;d=d.parentElement&&d.parentElement.closest('details.folder');}});
+    // rewrite the locale-switch links to THIS page's equivalent path (swap the locale prefix)
+    var ll=document.querySelectorAll('[data-locale-home]');
+    if(ll.length){var lc=document.querySelector('[data-locale-home][data-locale-active]'),cp=lc?lc.getAttribute('data-locale-home'):'/';cp=cp==='/'?'':cp;
+      var rest=location.pathname;if(cp&&rest.indexOf(cp)===0)rest=rest.slice(cp.length)||'/';
+      ll.forEach(function(a){var h=a.getAttribute('data-locale-home'),p=h==='/'?'':h;a.setAttribute('href',rest==='/'?(p||'/'):(p+rest));});}
+    // mobile nav-context: "Active tab / Page title" (the shell can't know the page server-side)
+    var nc=document.querySelector('[data-nav-context]');
+    if(nc){var at=document.querySelector('[data-tabbar] a[aria-current="page"]'),h1=document.querySelector('main h1');
+      nc.textContent=[at&&at.textContent.trim(),h1&&h1.textContent.trim()].filter(Boolean).join(' / ');}
+  }
+  sync();
+  var outlet=document.querySelector('[data-june-outlet]');
+  if(outlet) new MutationObserver(sync).observe(outlet,{childList:true,subtree:true});
+})();</script><script type="module" src="/agent-fleet-console/_june/client.aa34fb55.js"></script><script type="application/json" id="june-webmcp">[{"name":"search_docs","description":"Hybrid keyword + semantic search over the docs. Returns the most relevant passages with their doc slug, title, and relevance score.","inputSchema":{"type":"object","properties":{"query":{"type":"string","description":"A natural-language question or keywords."},"topK":{"type":"integer","description":"Number of results to return (default 5)."}},"required":["query"]}},{"name":"get_page","description":"Fetch one doc page as clean Markdown by its slug (e.g. introduction, search, agents).","inputSchema":{"type":"object","properties":{"slug":{"type":"string","description":"The page slug."}},"required":["slug"]}},{"name":"list_docs","description":"List every doc page with its slug, title, section, and `sources` (the code paths it documents). The map for finding which pages a code change affects.","inputSchema":{"type":"object","properties":{}}}]</script><script>(function(){var mc=navigator.modelContext;if(!mc||!mc.registerTool)return;var el=document.getElementById('june-webmcp');if(!el)return;var tools;try{tools=JSON.parse(el.textContent)}catch(e){return}var ac=new AbortController();tools.forEach(function(t){mc.registerTool({name:t.name,description:t.description,inputSchema:t.inputSchema,execute:function(args){return fetch('/mcp',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:t.name,arguments:args}})}).then(function(r){return r.json()}).then(function(j){return j.result})}},{signal:ac.signal})})})();</script></body></html>

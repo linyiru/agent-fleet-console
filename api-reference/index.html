@@ -1,0 +1,875 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="icon" href="/agent-fleet-console/favicon.svg" type="image/svg+xml"/><title>API Reference - Agent Fleet Console</title><meta name="description" content="A local-first console for managing Docker-based coding agents."/><meta property="og:title" content="API Reference"/><meta property="og:description" content="A local-first console for managing Docker-based coding agents."/><meta property="og:type" content="article"/><script type="speculationrules">{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.md"}},{"not":{"href_matches":"/*.json"}},{"not":{"href_matches":"/*.txt"}},{"not":{"href_matches":"/*.xml"}},{"not":{"href_matches":"/mcp"}}]},"eagerness":"moderate"}],"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.md"}},{"not":{"href_matches":"/*.json"}},{"not":{"href_matches":"/*.txt"}},{"not":{"href_matches":"/*.xml"}},{"not":{"href_matches":"/mcp"}}]},"eagerness":"moderate"}]}</script><script>(function(){if(HTMLScriptElement.supports&&HTMLScriptElement.supports('speculationrules'))return;var seen=new Set();document.addEventListener('pointerover',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(!a)return;var u=new URL(a.href,location.href);if(u.origin!==location.origin||seen.has(u.pathname)||u.pathname===location.pathname)return;if(/.(md|json)$/.test(u.pathname)||u.pathname==='/mcp')return;seen.add(u.pathname);var l=document.createElement('link');l.rel='prefetch';l.href=u.pathname+u.search;document.head.appendChild(l);},{passive:true});})();</script><style>
+          @view-transition { navigation: auto; }
+          ::view-transition-group(root),
+          ::view-transition-old(root),
+          ::view-transition-new(root) { animation-duration: 120ms; }
+          @media (prefers-reduced-motion: reduce) {
+            ::view-transition-group(*),
+            ::view-transition-old(*),
+            ::view-transition-new(*) { animation: none !important; }
+          }
+</style><link rel="stylesheet" href="/agent-fleet-console/_june/global.fa54b48b.css"/></head><body><script>(function(){try{var p=localStorage.getItem('kura-theme')||'system';var d=document.documentElement;d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',(p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme:dark)').matches))?'dark':'light');}catch(e){}})();</script><header class="sticky top-0 z-20 flex items-center gap-4 h-14 px-5 bg-topbar-bg backdrop-blur-sm border-b border-border max-md:px-4 max-md:gap-2.5"><a class="flex items-center gap-1.5 font-bold text-[1.05rem]" href="/agent-fleet-console/">Agent Fleet Console<!-- --> <span class="font-normal text-muted text-[.85rem]">Docs</span></a><form class="ml-auto max-md:ml-2 max-md:flex-1 max-md:min-w-0" action="/agent-fleet-console/search" method="get"><input class="w-[280px] max-w-[40vw] px-3 py-2 text-[.9rem] border border-border rounded-lg bg-surface-2 text-fg max-md:w-full max-md:max-w-none search-box" placeholder="Search docs…  (press /)" aria-label="Search" data-search-endpoint="/agent-fleet-console/search.json" data-doc-base="/agent-fleet-console/" data-search-static="1" name="q"/></form><nav class="flex items-center gap-4 text-muted text-[.9rem]"></nav></header><nav data-tabbar="true" class="sticky top-14 z-[15] h-11 bg-bg border-b border-border max-md:hidden"><div class="flex items-stretch gap-6 h-full max-w-[1280px] mx-auto px-5 overflow-x-auto no-scrollbar"><a data-tab-key="Guides" class="flex items-center text-[.9rem] border-b-2 border-transparent text-muted hover:text-fg [&amp;[aria-current=page]]:text-fg [&amp;[aria-current=page]]:border-accent" href="/agent-fleet-console/getting-started">Guides</a><a data-tab-key="Reference" class="flex items-center text-[.9rem] border-b-2 border-transparent text-muted hover:text-fg [&amp;[aria-current=page]]:text-fg [&amp;[aria-current=page]]:border-accent" href="/agent-fleet-console/api-reference">Reference</a><a data-tab-key="Development" class="flex items-center text-[.9rem] border-b-2 border-transparent text-muted hover:text-fg [&amp;[aria-current=page]]:text-fg [&amp;[aria-current=page]]:border-accent" href="/agent-fleet-console/codebase">Development</a></div></nav><button class="hidden max-md:flex items-center gap-2.5 w-full px-4 py-2.5 bg-bg border-0 border-b border-border text-fg-soft text-[.9rem] text-left cursor-pointer focus-visible:outline-none focus-visible:bg-hover" data-drawer-open="true" aria-controls="docs-nav" aria-expanded="false"><span class="text-[1.05rem] leading-none" aria-hidden="true">☰</span><span class="font-semibold text-fg flex-none">Navigation</span><span class="nav-bar-context text-muted flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" data-nav-context="true"></span></button><div class="drawer-backdrop" data-drawer-close="true" aria-hidden="true"></div><div class="grid grid-cols-[248px_minmax(0,1fr)_220px] max-lg:grid-cols-[248px_minmax(0,1fr)] max-md:grid-cols-1 items-start max-w-[1280px] mx-auto has-tabs"><aside class="sidebar sticky top-[100px] h-[calc(100vh-100px)] overflow-y-auto px-4 py-6 border-r border-border" id="docs-nav"><div data-tabbar="true" class="hidden max-md:flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-border"><a data-tab-key="Guides" class="px-3 py-1 border border-border rounded-full text-[.85rem] text-fg-soft [&amp;[aria-current=page]]:bg-accent-soft [&amp;[aria-current=page]]:text-accent [&amp;[aria-current=page]]:border-transparent" href="/agent-fleet-console/getting-started">Guides</a><a data-tab-key="Reference" class="px-3 py-1 border border-border rounded-full text-[.85rem] text-fg-soft [&amp;[aria-current=page]]:bg-accent-soft [&amp;[aria-current=page]]:text-accent [&amp;[aria-current=page]]:border-transparent" href="/agent-fleet-console/api-reference">Reference</a><a data-tab-key="Development" class="px-3 py-1 border border-border rounded-full text-[.85rem] text-fg-soft [&amp;[aria-current=page]]:bg-accent-soft [&amp;[aria-current=page]]:text-accent [&amp;[aria-current=page]]:border-transparent" href="/agent-fleet-console/codebase">Development</a></div><div data-tab="Guides"><div class="mb-5"><p class="mb-1.5 ml-2 text-sm font-semibold text-fg">Guides</p><ul class="flex flex-col gap-px"><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/getting-started">Getting Started</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/operator-guide">Operator Guide</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/configuration">Configuration Reference</a></li></ul></div></div><div data-tab="Reference" hidden=""><div class="mb-5"><p class="mb-1.5 ml-2 text-sm font-semibold text-fg">Reference</p><ul class="flex flex-col gap-px"><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/api-reference">API Reference</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/patterns">Implementation Patterns</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/template-library">Template Library</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/shared-memory">Shared Memory</a></li></ul></div></div><div data-tab="Development" hidden=""><div class="mb-5"><p class="mb-1.5 ml-2 text-sm font-semibold text-fg">Development</p><ul class="flex flex-col gap-px"><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/codebase">Codebase Guide</a></li><li><a class="flex items-center gap-1.5 leading-6 px-2 py-1.5 rounded-md text-sm text-fg-soft hover:bg-hover" href="/agent-fleet-console/release-checklist">Release Checklist</a></li></ul></div></div></aside><div data-june-outlet=""><main class="w-auto max-w-none m-0 min-w-0 px-10 pt-8 pb-20 max-md:px-4 max-md:pt-5 max-md:pb-12"><details class="hidden max-lg:block mb-5 border border-border rounded-xl overflow-hidden"><summary class="chevron flex justify-between items-center cursor-pointer px-3.5 py-2.5 text-[.85rem] font-semibold text-fg-soft">On this page</summary><div class="flex flex-col px-3.5 pt-1 pb-2.5 border-t border-border"><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#authentication">Authentication</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#response-conventions">Response Conventions</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#common-payloads">Common Payloads</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#system-endpoints">System Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#fleet-overview-and-nodes">Fleet Overview And Nodes</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#fleet-node-proxy-endpoints">Fleet Node Proxy Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#fleet-wide-sync">Fleet-Wide Sync</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#local-instance-endpoints">Local Instance Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#global-config-endpoints">Global Config Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#shared-memory-endpoints">Shared Memory Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#codex-cli-capability">Codex CLI Capability</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#template-library-endpoints">Template Library Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#backup-endpoints">Backup Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#telegram-onboarding-endpoints">Telegram Onboarding Endpoints</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#terminal-websocket">Terminal Websocket</a><a class="py-1.5 text-muted text-[.85rem] hover:text-accent" href="#curl-examples">Curl Examples</a></div></details><div class="flex items-center justify-between gap-4 mb-6"><div class="prose"><h1 class="!m-0">API Reference</h1></div><div class="relative inline-flex items-stretch flex-none"><button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[.85rem] border border-border border-r-0 rounded-l-lg bg-surface text-fg-soft cursor-pointer hover:bg-hover hover:text-fg" data-copy-md="/agent-fleet-console/api-reference.md"><svg class="" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>Copy Markdown</button><details class="relative inline-flex items-stretch" data-menu="true"><summary class="chevron inline-flex items-center justify-center w-[30px] border border-border rounded-r-lg bg-surface text-muted cursor-pointer hover:bg-hover hover:text-fg" aria-label="More actions"></summary><div class="absolute right-0 top-[calc(100%+.4rem)] z-30 min-w-[17rem] flex flex-col gap-px p-1.5 bg-surface border border-border rounded-xl shadow-xl"><button class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" data-copy-md="/agent-fleet-console/api-reference.md"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg><span class="flex flex-col min-w-0"><span class="font-semibold text-[.9rem] text-fg">Copy Markdown</span><span class="text-[.8rem] text-muted">Copy this page as Markdown for LLMs</span></span></button><a class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" href="/agent-fleet-console/api-reference.md"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M16 21H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6l4 4v12a2 2 0 0 1-2 2z"></path><path d="M9 13h6M9 17h4"></path></svg><span class="flex flex-col min-w-0"><span class="inline-flex items-center gap-1 font-semibold text-[.9rem] text-fg">View as Markdown<!-- --> <svg class="text-muted" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></span><span class="text-[.8rem] text-muted">View this page as plain text</span></span></a><a class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" href="https://chatgpt.com/?q=Please%20read%20this%20doc%20and%20answer%20my%20questions%3A%20API%20Reference" target="_blank" rel="noreferrer"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"></path></svg><span class="flex flex-col min-w-0"><span class="inline-flex items-center gap-1 font-semibold text-[.9rem] text-fg">Open in ChatGPT<!-- --> <svg class="text-muted" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></span><span class="text-[.8rem] text-muted">Ask ChatGPT about this page</span></span></a><a class="flex items-start gap-2.5 w-full px-2.5 py-2 rounded-lg bg-transparent border-0 text-fg-soft text-left cursor-pointer hover:bg-hover" href="https://claude.ai/new?q=Please%20read%20this%20doc%20and%20answer%20my%20questions%3A%20API%20Reference" target="_blank" rel="noreferrer"><svg class="flex-none mt-0.5 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"></path></svg><span class="flex flex-col min-w-0"><span class="inline-flex items-center gap-1 font-semibold text-[.9rem] text-fg">Open in Claude<!-- --> <svg class="text-muted" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg></span><span class="text-[.8rem] text-muted">Ask Claude about this page</span></span></a></div></details></div></div><article class="prose"><p>Fleet exposes an Express JSON API under <code>/api</code>. The API is primarily used by the React app, but it is also useful for local automation and diagnostics.</p>
+<p>The API is not versioned yet. Treat request and response shapes as project-internal until a stable public API is declared.</p>
+<h2 id="authentication">Authentication</h2>
+<p>When auth is disabled, API routes are open on the bound interface.</p>
+<p>When <code>HERMES_CONSOLE_TOKEN</code> is set or <code>HERMES_CONSOLE_REQUIRE_AUTH=1</code>, every <code>/api</code> request must include one of:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-http"><span class="line"><span>Authorization: Bearer &#x3C;token></span></span></code></pre>
+<p>or:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-http"><span class="line"><span>x-hermes-console-token: &#x3C;token></span></span></code></pre>
+<p>Websocket upgrades accept the bearer header or a query token:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>?auth=&#x3C;token></span></span>
+<span class="line"><span>?token=&#x3C;token></span></span></code></pre>
+<p>Do not expose Fleet without auth.</p>
+<h2 id="response-conventions">Response Conventions</h2>
+<p>Most successful responses are JSON objects. Errors are JSON with an <code>error</code> field:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "error"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"Authentication required"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Long-running operations return <code>202 Accepted</code> with a job object:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "job"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "id"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "action"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"create"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "instance"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "status"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"queued"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "progress"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">0</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">  }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Poll job status with:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>GET /api/jobs/:id</span></span></code></pre>
+<h2 id="common-payloads">Common Payloads</h2>
+<p>Create an agent through the Fleet node route:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-http"><span class="line"><span>POST /api/fleet/local/instances</span></span>
+<span class="line"><span>Content-Type: application/json</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "templateId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"personal-assistant"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "start"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "runtime"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"docker"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "dependencies"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "camofox"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">  },</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "capabilities"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "codexCli"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "sharedMemory"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">  },</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "contextFiles"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: {},</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "telegram"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">    "enabled"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">false</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">  }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Run a lifecycle action:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-http"><span class="line"><span>POST /api/fleet/local/instances/research-agent/actions</span></span>
+<span class="line"><span>Content-Type: application/json</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "action"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"restart"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "confirmed"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "riskConfirmed"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Send a chat turn:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-http"><span class="line"><span>POST /api/fleet/local/instances/research-agent/sessions/chat</span></span>
+<span class="line"><span>Content-Type: application/json</span></span></code></pre>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "sessionId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">""</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "message"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"Summarize the current workspace."</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "executionPolicy"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"default"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<h2 id="system-endpoints">System Endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/health</code></td>
+<td>Health, root paths, data dir, app root, console version</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/setup/baseline</code></td>
+<td>Setup readiness checks</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/security</code></td>
+<td>Auth status, self-update flag, audit summary</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/events</code></td>
+<td>Recent events, optional <code>instance</code> and <code>limit</code> query params</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/jobs</code></td>
+<td>Recent jobs, optional <code>limit</code> query param</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/jobs/:id</code></td>
+<td>One job by ID</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/jobs/:id/cancel</code></td>
+<td>Cancel a local job</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/system/git-update-restart</code></td>
+<td>Start console self-update when enabled</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/system/git-update-restart/status</code></td>
+<td>Self-update status</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fleet-overview-and-nodes">Fleet Overview And Nodes</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/overview</code></td>
+<td>Aggregated local and remote instances, nodes, jobs, and metrics</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/nodes</code></td>
+<td>List configured Fleet nodes</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/nodes</code></td>
+<td>Create a remote node record</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/fleet/nodes/:nodeId</code></td>
+<td>Update a node label, URL, token, or enabled state</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/fleet/nodes/:nodeId</code></td>
+<td>Remove a node record</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/nodes/:nodeId/test</code></td>
+<td>Test node reachability</td>
+</tr>
+</tbody>
+</table>
+<p><code>/api/fleet/overview?refreshVersions=1</code> asks nodes to refresh version/update status.</p>
+<h2 id="fleet-node-proxy-endpoints">Fleet Node Proxy Endpoints</h2>
+<p>These routes work for <code>local</code> and remote node IDs. The UI uses these routes for most operations.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances</code></td>
+<td>Create an agent on a target node</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name</code></td>
+<td>Read one agent snapshot</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/display-name</code></td>
+<td>Set an agent display name</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/actions</code></td>
+<td>Queue start, stop, restart, update, or delete</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/clone</code></td>
+<td>Clone an agent on that node</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/move</code></td>
+<td>Move an agent to another Fleet node through backup, transfer, restore, verify, and optional source removal</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/telegram</code></td>
+<td>Queue Telegram setup for an agent</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/gateway</code></td>
+<td>Dashboard, VNC, web, proxy, auth, and diagnostics URLs</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/terminal-ticket</code></td>
+<td>Create a terminal websocket ticket</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/crons</code></td>
+<td>Read discovered cron entries</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/credentials</code></td>
+<td>Read redacted per-agent credential summaries</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/payment-policy</code></td>
+<td>Read payment policy</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/sessions</code></td>
+<td>List chat sessions</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/sessions/:sessionId/messages</code></td>
+<td>List chat messages</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/sessions/chat</code></td>
+<td>Send a chat turn</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/sessions/runs/:runId</code></td>
+<td>Get chat run status</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/instances/:name/sessions/runs/:runId/stop</code></td>
+<td>Stop a chat run</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/backups</code></td>
+<td>List backups on a node</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/backups/:file/download</code></td>
+<td>Download a backup from a node</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/backups/export</code></td>
+<td>Queue backup export on a node</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/backups/inspect</code></td>
+<td>Inspect a backup on a node</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/jobs/:jobId/cancel</code></td>
+<td>Cancel a remote job</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/jobs/:jobId</code></td>
+<td>Read remote job status</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/console/git-update-restart</code></td>
+<td>Start remote console self-update</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/console/git-update-restart/status</code></td>
+<td>Read remote self-update status</td>
+</tr>
+</tbody>
+</table>
+<p>For remote nodes, the coordinator forwards requests to the node's base URL with its configured bearer token.</p>
+<h2 id="fleet-wide-sync">Fleet-Wide Sync</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/global-config/sync</code></td>
+<td>Sync provider, credentials, and auth across selected fleet targets</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/global-config/sync-targets</code></td>
+<td>Sync explicit targets only</td>
+</tr>
+</tbody>
+</table>
+<p>Target shape:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "targets"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: [</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">    {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">      "nodeId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"local"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">      "name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">    }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">  ]</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<h2 id="local-instance-endpoints">Local Instance Endpoints</h2>
+<p>These routes operate only on the local console host. Prefer Fleet node proxy routes when your automation should work for local and remote nodes.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances</code></td>
+<td>List local instances</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/instances</code></td>
+<td>Create a local instance</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name</code></td>
+<td>Read one local instance</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/instances/:name/display-name</code></td>
+<td>Set display name</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/instances/:name/actions</code></td>
+<td>Queue lifecycle action</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/instances/:name/clone</code></td>
+<td>Clone a local instance</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/instances/:name/telegram</code></td>
+<td>Queue Telegram setup</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/gateway</code></td>
+<td>Gateway URLs and diagnostics</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/terminal-ticket</code></td>
+<td>Create terminal websocket ticket</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/crons</code></td>
+<td>Read cron entries</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/sessions</code></td>
+<td>List sessions</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/sessions/:sessionId/messages</code></td>
+<td>Read session messages</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/instances/:name/sessions/chat</code></td>
+<td>Send chat turn</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/sessions/runs/:runId</code></td>
+<td>Read chat run status</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/instances/:name/sessions/runs/:runId/stop</code></td>
+<td>Stop chat run</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/instances/:name/provider</code></td>
+<td>Write per-agent provider config</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/credentials</code></td>
+<td>Read redacted credential summaries</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/instances/:name/credentials</code></td>
+<td>Set a per-agent credential</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/instances/:name/credentials/:key</code></td>
+<td>Delete a per-agent credential</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/instances/:name/payment-policy</code></td>
+<td>Read payment policy</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/instances/:name/payment-policy</code></td>
+<td>Write payment policy</td>
+</tr>
+</tbody>
+</table>
+<p>Lifecycle actions accepted by the validator:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>create</span></span>
+<span class="line"><span>start</span></span>
+<span class="line"><span>stop</span></span>
+<span class="line"><span>restart</span></span>
+<span class="line"><span>update</span></span>
+<span class="line"><span>delete</span></span></code></pre>
+<p>Create is normally called through <code>POST /api/instances</code> or <code>POST /api/fleet/:nodeId/instances</code>, not through the actions route.</p>
+<h2 id="global-config-endpoints">Global Config Endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/hermes-provider-catalog</code></td>
+<td>Bundled provider catalog</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/global-config</code></td>
+<td>Provider, credentials summaries, OAuth, and sync state</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/global-config/provider</code></td>
+<td>Save fleet-wide provider default</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/global-config/credentials</code></td>
+<td>Set shared credential</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/global-config/credentials/:key</code></td>
+<td>Delete shared credential</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/global-config/oauth/start</code></td>
+<td>Start provider OAuth device flow</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/global-config/oauth/:provider/:sessionId</code></td>
+<td>Read OAuth session status</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/global-config/sync</code></td>
+<td>Queue local global config sync</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/global-config/import</code></td>
+<td>Import provider/credential bundle metadata</td>
+</tr>
+</tbody>
+</table>
+<p>Provider payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "provider"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"openrouter"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "model"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"anthropic/claude-sonnet-4.6"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "baseUrl"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"https://openrouter.ai/api/v1"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "customEndpoints"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: []</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Credential payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "key"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"OPENROUTER_API_KEY"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "value"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"replace-with-secret-value"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<h2 id="shared-memory-endpoints">Shared Memory Endpoints</h2>
+<p>These routes operate on the local console's shared-memory hub and local agents. Remote Fleet nodes manage their own local links through their own console.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/shared-memory</code></td>
+<td>Hub status, linked-agent state, and supported entry kinds</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/shared-memory/hub</code></td>
+<td>Start or stop the hub with <code>{ &quot;action&quot;: &quot;start&quot; }</code> or <code>{ &quot;action&quot;: &quot;stop&quot; }</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/shared-memory/entries</code></td>
+<td>List recent entries, or search with <code>?query=...</code>; optional <code>limit</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/shared-memory/entries</code></td>
+<td>Add a shared entry as <code>console</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/shared-memory/entries/:id</code></td>
+<td>Delete a shared entry</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/shared-memory/agents/:name/link</code></td>
+<td>Link an agent, install the skill, and restart it if running</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/shared-memory/agents/:name/link</code></td>
+<td>Unlink an agent, remove the skill, and restart it if running</td>
+</tr>
+</tbody>
+</table>
+<p>Add-entry payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "content"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"Matt prefers concise agent reports."</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "kind"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"preference"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "importance"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">0.8</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Supported kinds are:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>meta</span></span>
+<span class="line"><span>preference</span></span>
+<span class="line"><span>correction</span></span>
+<span class="line"><span>identity</span></span></code></pre>
+<p>Link responses indicate whether Fleet reloaded the agent immediately:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "linked"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "restarted"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "restartRequired"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">false</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>The same link flow can run during agent creation by setting <code>capabilities.sharedMemory</code> to <code>true</code> in the create-agent payload. The shared-memory hub exposes only <code>fleet_shared_memory_*</code> tools to linked agents. Private agent memory remains available through each agent's own local Mnemosyne tools, not through the shared hub. The distinct Fleet names avoid collisions with local Mnemosyne tools such as <code>mnemosyne_shared_recall</code>.</p>
+<h2 id="codex-cli-capability">Codex CLI Capability</h2>
+<p>Set <code>capabilities.codexCli</code> to <code>true</code> when creating a Docker Hermes agent to install <code>@openai/codex</code> into that agent's persistent home. Fleet writes <code>/opt/data/.codex/auth.json</code> from the saved OpenAI Codex device login used by the <code>openai-codex</code> provider, so the agent does not need a separate <code>codex login</code>.</p>
+<p>Local creates return <code>409</code> if no Codex device login has been saved in Fleet settings. Remote Fleet nodes validate against their own saved Codex login.</p>
+<h2 id="template-library-endpoints">Template Library Endpoints</h2>
+<p>Template library archives are reusable, single-agent Docker Hermes captures. They never include secret values. Fleet stores only required secret names and checks the target node before deploy.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/template-library</code></td>
+<td>List saved templates</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/template-library/capture</code></td>
+<td>Capture one local Docker agent as a secret-free template</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/template-library/requirements/check</code></td>
+<td>Check an ad hoc requirements object against the local node</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/template-library/archive/deploy</code></td>
+<td>Queue target-side deploy from an imported archive path</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/template-library/:id/requirements/check</code></td>
+<td>Check target-node credentials and OAuth requirements</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/template-library/:id/deploy</code></td>
+<td>Queue deploy to local or remote Fleet node</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/template-library/:id</code></td>
+<td>Delete a template and its archive</td>
+</tr>
+</tbody>
+</table>
+<p>Capture payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "sourceName"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"Research baseline"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "description"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"Browser and workspace context configured"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "includeWorkspace"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Deploy payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "targetNodeId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"local"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "name"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent-copy"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "start"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "allowMissingRequirements"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">false</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Requirement check response:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "ok"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">false</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "missing"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: [</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">    { </span><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">"type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"oauth"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">"key"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"openai-codex"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">"label"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"openai-codex device login"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3"> },</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">    { </span><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">"type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"credential"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">"key"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"TELEGRAM_BOT_TOKEN"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">, </span><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">"label"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"Credential TELEGRAM_BOT_TOKEN"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3"> }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">  ]</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Deploy returns <code>409</code> when requirements are missing and <code>allowMissingRequirements</code> is not true. Remote deploy uploads the sanitized archive to the target Fleet node and queues the target node's deploy job.</p>
+<h2 id="backup-endpoints">Backup Endpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/backups</code></td>
+<td>List local backups</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/backups/:file/download</code></td>
+<td>Download local backup archive</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backups/export</code></td>
+<td>Queue local backup export</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backups/import</code></td>
+<td>Import a streamed <code>.tar.gz</code> archive into the local backup directory</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backups/inspect</code></td>
+<td>Inspect a local archive path</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/backups/restore</code></td>
+<td>Queue restore from local archive path</td>
+</tr>
+</tbody>
+</table>
+<p>Inspect payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "archivePath"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"/absolute/path/to/backup.tar.gz"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Restore payloads are validated by the server and can include target names, prefix options, workspace options, and secret handling flags.</p>
+<p>Move payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "targetNodeId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"workstation-2"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "includeWorkspace"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "includeSecrets"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">false</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "startTarget"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "removeSource"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">false</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>When <code>removeSource</code> is true, include the usual risky-action confirmation flags:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "confirmed"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "riskConfirmed"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">true</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<h2 id="telegram-onboarding-endpoints">Telegram Onboarding Endpoints</h2>
+<p>Local Telegram onboarding:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/telegram/onboarding/start</code></td>
+<td>Start pairing</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/telegram/onboarding/:pairingId</code></td>
+<td>Poll pairing status</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/telegram/onboarding/:pairingId</code></td>
+<td>Cancel pairing</td>
+</tr>
+</tbody>
+</table>
+<p>Fleet node proxy Telegram onboarding:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fleet/:nodeId/telegram/onboarding/start</code></td>
+<td>Start pairing on target node</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fleet/:nodeId/telegram/onboarding/:pairingId</code></td>
+<td>Poll target pairing status</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/fleet/:nodeId/telegram/onboarding/:pairingId</code></td>
+<td>Cancel target pairing</td>
+</tr>
+</tbody>
+</table>
+<p>Start payload:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "botName"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"research-agent Hermes"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<h2 id="terminal-websocket">Terminal Websocket</h2>
+<p>First request a ticket:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>GET /api/fleet/local/instances/:name/terminal-ticket</span></span></code></pre>
+<p>Response:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "ticket"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"short-lived-ticket"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "wsUrl"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"/api/instances/research-agent/terminal?ticket=short-lived-ticket"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Then open the websocket URL. Optional query params:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-text"><span class="line"><span>cols=120</span></span>
+<span class="line"><span>rows=36</span></span>
+<span class="line"><span>auth=&#x3C;console-token></span></span></code></pre>
+<p>Client-to-server websocket messages:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"input"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "data"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"ls</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72">\n</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Server-to-client messages:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"output"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "data"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"..."</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Status messages use:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-json"><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"status"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#7EE787">  "status"</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">: </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"connected"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">}</span></span></code></pre>
+<p>Remote terminal tickets are requested through the Fleet node proxy route. The coordinator returns <code>/api/fleet/:nodeId/instances/:name/terminal?...</code> and proxies that websocket to the remote node's local terminal endpoint.</p>
+<h2 id="curl-examples">Curl Examples</h2>
+<p>Health:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">curl</span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF"> -H</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> "Authorization: Bearer </span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">$HERMES_CONSOLE_TOKEN</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72"> \</span></span>
+<span class="line"><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">  http://127.0.0.1:5180/api/health</span></span></code></pre>
+<p>List fleet overview:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">curl</span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF"> -H</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> "Authorization: Bearer </span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">$HERMES_CONSOLE_TOKEN</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72"> \</span></span>
+<span class="line"><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">  http://127.0.0.1:5180/api/fleet/overview</span></span></code></pre>
+<p>Restart an agent:</p>
+<pre class="shiki shiki-themes github-light github-dark-default" style="--shiki-light:#24292e;--shiki-dark:#e6edf3;--shiki-light-bg:#fff;--shiki-dark-bg:#0d1117" tabindex="0"><code class="language-bash"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#FFA657">curl</span><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF"> -X</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> POST</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72"> \</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">  -H</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> "Authorization: Bearer </span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3">$HERMES_CONSOLE_TOKEN</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">"</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72"> \</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">  -H</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> "Content-Type: application/json"</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72"> \</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79C0FF">  -d</span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF"> '{"action":"restart","confirmed":true,"riskConfirmed":true}'</span><span style="--shiki-light:#005CC5;--shiki-dark:#FF7B72"> \</span></span>
+<span class="line"><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF">  http://127.0.0.1:5180/api/fleet/local/instances/research-agent/actions</span></span></code></pre>
+</article><nav class="flex justify-between gap-4 mt-12 pt-6 border-t border-border"><span></span><a class="flex-1 px-4 py-3.5 border border-border rounded-xl hover:border-accent text-right" href="/agent-fleet-console/patterns"><div class="text-muted text-[.78rem]">Next<!-- --> →</div><div class="font-semibold text-accent">Implementation Patterns</div></a></nav><script>document.querySelectorAll('[data-copy-md]').forEach(function(b){b.addEventListener('click',async function(){try{var r=await fetch(b.getAttribute('data-copy-md'));var t=await r.text();await navigator.clipboard.writeText(t);var o=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=o;},1500);}catch(e){alert('Copy failed: '+e);}});});document.querySelectorAll('.prose pre').forEach(function(pre){if(pre.querySelector('.copy-code'))return;var b=document.createElement('button');b.className='copy-code';b.textContent='Copy';b.addEventListener('click',async function(){var c=pre.querySelector('code');try{await navigator.clipboard.writeText(c?c.innerText:pre.innerText);var o=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=o;},1200);}catch(e){}});pre.appendChild(b);});document.querySelectorAll('.tabs').forEach(function(t){t.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){var i=b.getAttribute('data-tab');t.querySelectorAll('.tab-btn').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-tab')===i);});t.querySelectorAll('.tab-panel').forEach(function(p){p.hidden=p.getAttribute('data-tab')!==i;});});});});(function(){var blocks=document.querySelectorAll('code.language-mermaid');if(!blocks.length)return;var items=[];blocks.forEach(function(c){var pre=c.closest('pre')||c;var h=document.createElement('div');h.className='mermaid-diagram';pre.replaceWith(h);items.push({src:c.textContent,holder:h});});var lib,id=0;function load(){return lib||(lib=import("https://esm.sh/mermaid@11").then(function(m){return m.default;}));}function theme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'default';}function run(){load().then(function(mermaid){mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:theme()});items.forEach(function(it){mermaid.render('kura-mmd-'+(id++),it.src).then(function(r){it.holder.innerHTML=r.svg;}).catch(function(e){it.holder.innerHTML='<pre class="mermaid-error">'+String((e&&e.message)||e)+'</pre>';});});}).catch(function(){});}run();var cur=document.documentElement.getAttribute('data-theme');new MutationObserver(function(){var t=document.documentElement.getAttribute('data-theme');if(t!==cur){cur=t;run();}}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});})();</script></main><aside class="sticky top-14 max-h-[calc(100vh-56px)] overflow-y-auto px-4 py-8 max-lg:hidden"><p class="text-[.72rem] font-bold tracking-wider uppercase text-muted mb-2.5">On this page</p><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#authentication">Authentication</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#response-conventions">Response Conventions</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#common-payloads">Common Payloads</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#system-endpoints">System Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#fleet-overview-and-nodes">Fleet Overview And Nodes</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#fleet-node-proxy-endpoints">Fleet Node Proxy Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#fleet-wide-sync">Fleet-Wide Sync</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#local-instance-endpoints">Local Instance Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#global-config-endpoints">Global Config Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#shared-memory-endpoints">Shared Memory Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#codex-cli-capability">Codex CLI Capability</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#template-library-endpoints">Template Library Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#backup-endpoints">Backup Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#telegram-onboarding-endpoints">Telegram Onboarding Endpoints</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#terminal-websocket">Terminal Websocket</a><a class="block py-1 text-muted text-[.85rem] hover:text-accent" href="#curl-examples">Curl Examples</a></aside></div></div><footer class="border-t border-border mt-8"><div class="flex items-center justify-between flex-wrap gap-4 max-w-[1280px] mx-auto px-6 py-5 max-md:px-4"><nav class="flex items-center gap-[1.1rem] text-[.85rem]"><a class="text-muted hover:text-fg" href="/agent-fleet-console/llms.txt">llms.txt</a><button type="button" class="inline-flex items-center justify-center w-[30px] h-[30px] p-0 text-[.95rem] leading-none border border-border rounded-lg bg-surface text-fg cursor-pointer hover:bg-hover" data-theme-toggle="true" aria-label="Toggle theme"></button></nav><a class="text-muted text-[.85rem] hover:text-accent" href="https://kura.build/" target="_blank" rel="noreferrer">Powered by Kura</a></div></footer><script>document.addEventListener('keydown',function(e){if(e.key==='/' && !document.documentElement.dataset.ctrlk && !/INPUT|TEXTAREA/.test((document.activeElement||{}).tagName||'')){e.preventDefault();var s=document.querySelector('.search-box');if(s)s.focus();}});(function(){var b=document.querySelector('[data-theme-toggle]');if(!b)return;var d=document.documentElement,order=['system','light','dark'],icon={system:'🖥',light:'☀',dark:'☾'};function pref(){return d.getAttribute('data-theme-pref')||'system';}function res(p){return p==='dark'||(p==='system'&&matchMedia('(prefers-color-scheme:dark)').matches)?'dark':'light';}function set(p){d.setAttribute('data-theme-pref',p);d.setAttribute('data-theme',res(p));try{localStorage.setItem('kura-theme',p);}catch(e){}b.textContent=icon[p];b.setAttribute('title','Theme: '+p);}set(pref());b.addEventListener('click',function(){set(order[(order.indexOf(pref())+1)%order.length]);});try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){if(pref()==='system')d.setAttribute('data-theme',res('system'));});}catch(e){}})();document.addEventListener('click',function(e){var t=e.target;document.querySelectorAll('details[data-menu][open]').forEach(function(d){if(!d.contains(t))d.removeAttribute('open');});var it=t.closest&&t.closest('details[data-menu] a, details[data-menu] [data-copy-md]');if(it){var dd=it.closest('details[data-menu]');if(dd)setTimeout(function(){dd.removeAttribute('open');},0);}});document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details[data-menu][open]').forEach(function(d){d.removeAttribute('open');});});(function(){var root=document.documentElement;function opener(){return document.querySelector('[data-drawer-open]');}function items(){var d=document.getElementById('docs-nav');if(!d)return[];return[].filter.call(d.querySelectorAll('a[href],button:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'),function(el){return el.offsetParent!==null;});}function set(o){var was=root.classList.contains('drawer-open');root.classList.toggle('drawer-open',o);var b=opener();if(b)b.setAttribute('aria-expanded',o?'true':'false');if(o){var f=items();if(f[0])f[0].focus();}else if(was&&b)b.focus();}document.addEventListener('click',function(e){if(e.target.closest('[data-drawer-open]')){e.preventDefault();set(!root.classList.contains('drawer-open'));return;}if(e.target.closest('[data-drawer-close]')){set(false);return;}if(e.target.closest('#docs-nav a'))set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'){set(false);return;}if(e.key==='Tab'&&root.classList.contains('drawer-open')){var f=items();if(!f.length)return;var first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}else if(f.indexOf(document.activeElement)<0){e.preventDefault();first.focus();}}});})();(function(){
+  function trim(p){return p.length>1&&p.endsWith('/')?p.slice(0,-1):p;}
+  function sync(){
+    var path=trim(location.pathname), tab=null;
+    var links=document.querySelectorAll('.sidebar a[href],[data-tabbar] a[href]');
+    for(var i=0;i<links.length;i++){var a=links[i],on=trim(a.getAttribute('href'))===path;
+      if(on){a.setAttribute('aria-current','page');var g=a.closest('[data-tab]');if(g)tab=g.getAttribute('data-tab');}
+      else a.removeAttribute('aria-current');}
+    if(tab!=null){
+      document.querySelectorAll('[data-tab]').forEach(function(g){g.hidden=g.getAttribute('data-tab')!==tab;});
+      document.querySelectorAll('[data-tabbar] a').forEach(function(a){
+        if(a.getAttribute('data-tab-key')===tab)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+    }
+    // expand the folder(s) holding the active page. Iterate EVERY aria-current sidebar link, not
+    // just the first: a folder-as-page link lives in a <details>, but the mobile tab-bar link (also
+    // in .sidebar, earlier in the DOM) has no folder ancestor — querySelector would pick that one
+    // and expand nothing. forEach opens each link's folder chain; tab links are harmless no-ops.
+    document.querySelectorAll('.sidebar a[aria-current="page"]').forEach(function(cur){
+      var d=cur.closest('details.folder');while(d){d.open=true;d=d.parentElement&&d.parentElement.closest('details.folder');}});
+    // rewrite the locale-switch links to THIS page's equivalent path (swap the locale prefix)
+    var ll=document.querySelectorAll('[data-locale-home]');
+    if(ll.length){var lc=document.querySelector('[data-locale-home][data-locale-active]'),cp=lc?lc.getAttribute('data-locale-home'):'/';cp=cp==='/'?'':cp;
+      var rest=location.pathname;if(cp&&rest.indexOf(cp)===0)rest=rest.slice(cp.length)||'/';
+      ll.forEach(function(a){var h=a.getAttribute('data-locale-home'),p=h==='/'?'':h;a.setAttribute('href',rest==='/'?(p||'/'):(p+rest));});}
+    // mobile nav-context: "Active tab / Page title" (the shell can't know the page server-side)
+    var nc=document.querySelector('[data-nav-context]');
+    if(nc){var at=document.querySelector('[data-tabbar] a[aria-current="page"]'),h1=document.querySelector('main h1');
+      nc.textContent=[at&&at.textContent.trim(),h1&&h1.textContent.trim()].filter(Boolean).join(' / ');}
+  }
+  sync();
+  var outlet=document.querySelector('[data-june-outlet]');
+  if(outlet) new MutationObserver(sync).observe(outlet,{childList:true,subtree:true});
+})();</script><script type="module" src="/agent-fleet-console/_june/client.aa34fb55.js"></script><script type="application/json" id="june-webmcp">[{"name":"search_docs","description":"Hybrid keyword + semantic search over the docs. Returns the most relevant passages with their doc slug, title, and relevance score.","inputSchema":{"type":"object","properties":{"query":{"type":"string","description":"A natural-language question or keywords."},"topK":{"type":"integer","description":"Number of results to return (default 5)."}},"required":["query"]}},{"name":"get_page","description":"Fetch one doc page as clean Markdown by its slug (e.g. introduction, search, agents).","inputSchema":{"type":"object","properties":{"slug":{"type":"string","description":"The page slug."}},"required":["slug"]}},{"name":"list_docs","description":"List every doc page with its slug, title, section, and `sources` (the code paths it documents). The map for finding which pages a code change affects.","inputSchema":{"type":"object","properties":{}}}]</script><script>(function(){var mc=navigator.modelContext;if(!mc||!mc.registerTool)return;var el=document.getElementById('june-webmcp');if(!el)return;var tools;try{tools=JSON.parse(el.textContent)}catch(e){return}var ac=new AbortController();tools.forEach(function(t){mc.registerTool({name:t.name,description:t.description,inputSchema:t.inputSchema,execute:function(args){return fetch('/mcp',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:t.name,arguments:args}})}).then(function(r){return r.json()}).then(function(j){return j.result})}},{signal:ac.signal})})})();</script></body></html>

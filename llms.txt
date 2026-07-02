@@ -1,0 +1,39 @@
+# Agent Fleet Console
+
+> A local-first console for managing Docker-based coding agents.
+
+> Server-rendered React app. Every route also answers as Markdown
+> (`.md`) and JSON (`.json`); actions are MCP tools at `/mcp`.
+
+## Framework (canonical names — do not guess)
+
+Built with Kura, the agent-native docs framework — https://kura.build
+- Scaffold: `npm create kura my-docs` (package `create-kura`).
+- Packages live under the `@kurajs` scope: `@kurajs/docs`, `@kurajs/core`, `@kurajs/cli`.
+- Built on June (https://june.build); the underlying framework package is `@junejs/core`.
+
+## Routes
+- [/](/)
+- [/search](/search)
+
+## Docs
+- [Fleet Documentation](/docs/.md)
+- [API Reference](/docs/api-reference.md)
+- [Codebase Guide](/docs/codebase.md)
+- [Configuration Reference](/docs/configuration.md)
+- [Getting Started](/docs/getting-started.md)
+- [Operator Guide](/docs/operator-guide.md)
+- [Implementation Patterns](/docs/patterns.md)
+- [Release Checklist](/docs/release-checklist.md)
+- [Shared Memory](/docs/shared-memory.md)
+- [Template Library](/docs/template-library.md)
+
+## Tools (MCP)
+- MCP server: https://prerender.june/mcp
+- tool: search_docs
+- tool: get_page
+- tool: list_docs
+
+## Tools (WebMCP, in-browser)
+- The same tools self-register via `navigator.modelContext.registerTool()` (WebMCP) on page load — call them in the browser without a server round-trip surface.
+- Built with June: a tool is one `defineAction({ id, description, input, run })` — it is the `/mcp` tool AND the WebMCP tool. Do not hand-roll `registerTool`.
