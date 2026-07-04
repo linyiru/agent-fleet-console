@@ -267,7 +267,7 @@ Fleet stores required secret names only. Before deploy, Fleet checks whether the
 
 Deploying a template creates a fresh Docker Hermes agent with a new name, fresh ports, and fresh runtime identity. The sanitized home/workspace state is restored, then target-side auth and capabilities are rehydrated from that target Fleet node. Codex CLI uses the target node's saved Codex device login, and shared memory links to the target node's shared-memory hub.
 
-You can also choose **From template** in the New agent modal. See [Template library](template-library.md) for the full storage, sanitization, requirement-check, and remote-deploy model.
+You can also choose **From template** in the New agent modal. See [Template library](/agent-fleet-console/template-library.md) for the full storage, sanitization, requirement-check, and remote-deploy model.
 
 ## Restore
 
@@ -355,7 +355,7 @@ fleet_shared_memory_forget
 fleet_shared_memory_stats
 ```
 
-If it registers private-looking tools such as `mnemosyne_recall`, or local Mnemosyne shared tools such as `mnemosyne_shared_recall`, restart the shared-memory hub and relink the agent. See [Shared memory](shared-memory.md) for the full memory model and troubleshooting steps.
+If it registers private-looking tools such as `mnemosyne_recall`, or local Mnemosyne shared tools such as `mnemosyne_shared_recall`, restart the shared-memory hub and relink the agent. See [Shared memory](/agent-fleet-console/shared-memory.md) for the full memory model and troubleshooting steps.
 
 ## NemoHermes Agents
 

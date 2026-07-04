@@ -4,15 +4,15 @@ Fleet is a local-first control plane for Dockerized Hermes agents and trusted re
 
 ## Guide Map
 
-- [Getting started](getting-started.md): requirements, setup, first run, development mode, existing agents, and baseline checks.
-- [Operator guide](operator-guide.md): daily dashboard workflows, creating agents, provider sync, chat, gateway tools, web publishing, template library, backups, Fleet nodes, Telegram, and NemoHermes.
-- [Shared memory](shared-memory.md): private agent memory versus fleet shared memory, linking behavior, tools, operator controls, and troubleshooting.
-- [Template library](template-library.md): reusable Docker agent captures, storage, sanitization, requirements, deploy behavior, remote deploy, and troubleshooting.
-- [Configuration reference](configuration.md): environment loading, important variables, local storage, secrets, provider files, agent files, and deployment examples.
-- [API reference](api-reference.md): auth model, response conventions, local API endpoints, Fleet node proxy endpoints, and websocket terminal tickets.
-- [Codebase guide](codebase.md): frontend, backend, services, data, and release architecture.
-- [Implementation patterns](patterns.md): conventions for changing frontend, backend, settings, release, and security behavior.
-- [Release checklist](release-checklist.md): release gate, manual review, runtime-state audit, and required public project files.
+- [Getting started](/agent-fleet-console/getting-started.md): requirements, setup, first run, development mode, existing agents, and baseline checks.
+- [Operator guide](/agent-fleet-console/operator-guide.md): daily dashboard workflows, creating agents, provider sync, chat, gateway tools, web publishing, template library, backups, Fleet nodes, Telegram, and NemoHermes.
+- [Shared memory](/agent-fleet-console/shared-memory.md): private agent memory versus fleet shared memory, linking behavior, tools, operator controls, and troubleshooting.
+- [Template library](/agent-fleet-console/template-library.md): reusable Docker agent captures, storage, sanitization, requirements, deploy behavior, remote deploy, and troubleshooting.
+- [Configuration reference](/agent-fleet-console/configuration.md): environment loading, important variables, local storage, secrets, provider files, agent files, and deployment examples.
+- [API reference](/agent-fleet-console/api-reference.md): auth model, response conventions, local API endpoints, Fleet node proxy endpoints, and websocket terminal tickets.
+- [Codebase guide](/agent-fleet-console/codebase.md): frontend, backend, services, data, and release architecture.
+- [Implementation patterns](/agent-fleet-console/patterns.md): conventions for changing frontend, backend, settings, release, and security behavior.
+- [Release checklist](/agent-fleet-console/release-checklist.md): release gate, manual review, runtime-state audit, and required public project files.
 
 ## App Shape
 
